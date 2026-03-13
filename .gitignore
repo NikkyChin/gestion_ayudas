@@ -1,0 +1,32 @@
+# --- Entornos Virtuales ---
+entorno_virtual/
+venv/
+.venv/
+ENV/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+
+# --- Django ---
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+.env
+
+# --- Docker ---
+.docker/
+# (Opcional) Si guardás la data de Postgres en una carpeta local:
+postgres_data/
+
+# --- VS Code ---
+.vscode/
+*.code-workspace
+
+# --- SO ---
+.DS_Store
+Thumbs.db
