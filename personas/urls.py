@@ -7,4 +7,5 @@ urlpatterns = [
     path("", views.lista_personas, name="lista_personas"),
     path("crear/", views.crear_persona, name="crear_persona"),
     path("<int:persona_id>/", views.detalle_persona, name="detalle_persona"),
+    path("<int:persona_id>/editar/", views.editar_persona, name="editar_persona"),
 ]

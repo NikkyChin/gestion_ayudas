@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Nueva persona{% endblock %}
+{% block title %}
+    {% if modo_edicion %}Editar persona{% else %}Nueva persona{% endif %}
+{% endblock %}
 
 {% block content %}
-<h1>Registrar persona</h1>
+<h1>
+    {% if modo_edicion %}Editar persona{% else %}Registrar persona{% endif %}
+</h1>
 
 <form method="post">
     {% csrf_token %}
@@ -13,7 +17,20 @@
     <hr>
     <h3>Convivientes</h3>
 
-    <div id="convivientes-container"></div>
+    <div id="convivientes-container">
+        {% if modo_edicion %}
+            {% for conviviente in persona.convivientes.all %}
+                <div class="conviviente-item">
+                    <hr>
+                    <input type="text" name="conviviente_nombre" placeholder="Nombre" value="{{ conviviente.nombre }}">
+                    <input type="text" name="conviviente_apellido" placeholder="Apellido" value="{{ conviviente.apellido }}">
+                    <input type="text" name="conviviente_dni" placeholder="DNI" value="{{ conviviente.dni }}">
+                    <input type="text" name="conviviente_parentesco" placeholder="Parentesco" value="{{ conviviente.parentesco }}">
+                    <button type="button" onclick="eliminarConviviente(this)">Eliminar conviviente</button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 
     <button type="button" onclick="agregarConviviente()">
         Agregar conviviente
@@ -28,20 +45,26 @@
 function agregarConviviente() {
     const container = document.getElementById("convivientes-container");
 
-    const index = container.children.length;
-
     const div = document.createElement("div");
+    div.classList.add("conviviente-item");
 
     div.innerHTML = `
         <hr>
-        <input type="text" name="convivientes[${index}][nombre]" placeholder="Nombre">
-        <input type="text" name="convivientes[${index}][apellido]" placeholder="Apellido">
-        <input type="text" name="convivientes[${index}][dni]" placeholder="DNI">
-        <input type="text" name="convivientes[${index}][parentesco]" placeholder="Parentesco">
+        <input type="text" name="conviviente_nombre" placeholder="Nombre">
+        <input type="text" name="conviviente_apellido" placeholder="Apellido">
+        <input type="text" name="conviviente_dni" placeholder="DNI">
+        <input type="text" name="conviviente_parentesco" placeholder="Parentesco">
+        <button type="button" onclick="eliminarConviviente(this)">Eliminar conviviente</button>
     `;
 
     container.appendChild(div);
 }
+
+function eliminarConviviente(boton) {
+    boton.closest(".conviviente-item").remove();
+}
 </script>
+
+<a href="{% url 'personas:lista_personas' %}">Volver</a>
 
 {% endblock %}

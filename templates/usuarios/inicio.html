@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+
+<h1>Panel de inicio</h1>
+
+<!-- Info del usuario -->
+<div class="tarjeta">
+    <p><strong>Usuario:</strong> {{ request.user.username }}</p>
+
+    {% if secretaria %}
+        <p><strong>Secretaría:</strong> {{ secretaria.nombre }}</p>
+    {% else %}
+        <p style="color: red;">No tienes una secretaría asignada</p>
+    {% endif %}
+</div>
+
+<!-- Acciones rápidas -->
+<div class="tarjeta">
+    <h2>Acciones</h2>
+
+    <div class="acciones">
+        <a class="btn" href="{% url 'personas:lista_personas' %}">Ver personas</a>
+        <a class="btn" href="{% url 'personas:crear_persona' %}">Registrar persona</a>
+        <a class="btn" href="#">Entregar ayuda</a>
+    </div>
+</div>
+
+<!-- Ayudas de la secretaría -->
+<div class="tarjeta">
+    <h2>Ayudas disponibles</h2>
+
+    {% if secretaria %}
+        <ul>
+            {% for ayuda in ayudas %}
+                <li>{{ ayuda.nombre }}</li>
+            {% empty %}
+                <li>No hay ayudas cargadas para esta secretaría.</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+
+{% endblock %}
