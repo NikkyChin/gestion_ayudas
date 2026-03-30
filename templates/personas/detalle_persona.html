@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle de persona{% endblock %}
+
+{% block content %}
+    <h1>{{ persona.apellido }}, {{ persona.nombre }}</h1>
+
+    <p><strong>DNI:</strong> {{ persona.dni }}</p>
+    <p><strong>Dirección:</strong> {{ persona.direccion }}</p>
+    <p><strong>Barrio:</strong> {{ persona.barrio }}</p>
+    <p><strong>Teléfono:</strong> {{ persona.telefono }}</p>
+    <p><strong>Observaciones:</strong> {{ persona.observaciones }}</p>
+
+    <hr>
+
+    <h2>Convivientes</h2>
+
+    <ul>
+        {% for conviviente in persona.convivientes.all %}
+            <li>
+                {{ conviviente.apellido }}, {{ conviviente.nombre }}
+                {% if conviviente.parentesco %}- {{ conviviente.parentesco }}{% endif %}
+                {% if conviviente.dni %}- DNI {{ conviviente.dni }}{% endif %}
+            </li>
+        {% empty %}
+            <li>No hay convivientes registrados.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'personas:lista_personas' %}">Volver al listado</a>
+{% endblock %}

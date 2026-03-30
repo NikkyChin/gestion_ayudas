@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Ayudas{% endblock %}
+
+{% block content %}
+<h1>Ayudas</h1>
+
+<ul>
+    {% for ayuda in ayudas %}
+        <li>{{ ayuda.nombre }} - {{ ayuda.secretaria.nombre }}</li>
+    {% empty %}
+        <li>No hay ayudas cargadas.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
