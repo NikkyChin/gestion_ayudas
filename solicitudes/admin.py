@@ -1,9 +1,16 @@
 from django.contrib import admin
-from .models import SolicitudAyuda
+from .models import EntregaAyuda, EntregaAyudaConviviente
 
 
-@admin.register(SolicitudAyuda)
-class SolicitudAyudaAdmin(admin.ModelAdmin):
-    list_display = ("id", "persona", "ayuda", "estado", "fecha", "usuario")
-    search_fields = ("persona__nombre", "persona__apellido", "persona__dni")
-    list_filter = ("estado", "ayuda__secretaria", "fecha")
+class EntregaAyudaConvivienteInline(admin.TabularInline):
+    model = EntregaAyudaConviviente
+    extra = 0
+    can_delete = False
+
+
+@admin.register(EntregaAyuda)
+class EntregaAyudaAdmin(admin.ModelAdmin):
+    list_display = ("id", "persona", "ayuda", "usuario", "fecha")
+    search_fields = ("persona__dni", "persona__nombre", "persona__apellido")
+    list_filter = ("ayuda__secretaria", "fecha")
+    inlines = [EntregaAyudaConvivienteInline]

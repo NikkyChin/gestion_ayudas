@@ -26,6 +26,24 @@
             <li>No hay convivientes registrados.</li>
         {% endfor %}
     </ul>
+    <hr>
+
+    <h2>Historial de ayudas</h2>
+
+    <ul>
+        {% for entrega in persona.entregas.all %}
+            <li>
+                {{ entrega.fecha|date:"d/m/Y H:i" }} -
+                {{ entrega.ayuda.nombre }} -
+                {{ entrega.ayuda.secretaria.nombre }}
+                {% if entrega.descripcion %}
+                    - {{ entrega.descripcion }}
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>No hay ayudas registradas.</li>
+        {% endfor %}
+    </ul>
 
     <a href="{% url 'personas:lista_personas' %}">Volver al listado</a>
     <a href="{% url 'personas:editar_persona' persona.id %}">Editar persona</a>
