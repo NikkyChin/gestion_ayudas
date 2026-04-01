@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Mis ayudas{% endblock %}
+
+{% block content %}
+<h1>Mis ayudas</h1>
+
+{% if secretaria %}
+    <div class="tarjeta">
+        <p><strong>Secretaría:</strong> {{ secretaria.nombre }}</p>
+        <a class="btn" href="{% url 'secretarias:crear_ayuda' %}">Agregar ayuda</a>
+    </div>
+
+    <div class="tarjeta">
+        {% if ayudas %}
+            <ul>
+                {% for ayuda in ayudas %}
+                    <li>
+                        <strong>{{ ayuda.nombre }}</strong>
+                        {% if ayuda.descripcion %}
+                            - {{ ayuda.descripcion }}
+                        {% endif %}
+                        {% if ayuda.activa %}
+                            - Activa
+                        {% else %}
+                            - Inactiva
+                        {% endif %}
+
+                        <div class="acciones">
+                            <a class="btn" href="{% url 'secretarias:editar_ayuda' ayuda.id %}">Editar</a>
+
+                            <form method="post" action="{% url 'secretarias:toggle_ayuda' ayuda.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <a class="btn" type="submit">
+                                    {% if ayuda.activa %}
+                                        Desactivar
+                                    {% else %}
+                                        Activar
+                                    {% endif %}
+                                </a>
+                            </form>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay ayudas cargadas para tu secretaría.</p>
+        {% endif %}
+    </div>
+{% else %}
+    <div class="tarjeta">
+        <p>No tienes una secretaría asociada.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

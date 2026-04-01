@@ -45,7 +45,6 @@ a {
     color: #1e3a5f;
 }
 
-button,
 .btn {
     background-color: #1e3a5f;
     color: white;
@@ -58,7 +57,6 @@ button,
     margin-top: 5px;
 }
 
-button:hover,
 .btn:hover {
     background-color: #16314f;
 }

@@ -5,7 +5,7 @@
 {% block content %}
     <h1>Listado de personas</h1>
 
-    <a href="{% url 'personas:crear_persona' %}">Nueva persona</a>
+    <a class="btn" href="{% url 'personas:crear_persona' %}">Nueva persona</a>
 
     <ul>
         {% for persona in personas %}
