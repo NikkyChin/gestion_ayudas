@@ -3,73 +3,127 @@
 {% block title %}Entregar ayuda{% endblock %}
 
 {% block content %}
+
 <h1>Entregar ayuda</h1>
 
-<div class="tarjeta">
-    <h2>Buscar persona por DNI</h2>
+{% if not persona %}
 
-    <form method="get">
-        <input type="text" name="dni" placeholder="Ingrese DNI">
-        <a class="btn" type="submit">Buscar</a>
-    </form>
-</div>
-
-{% if dni and not persona %}
+    <!-- 🔍 BUSCADOR -->
     <div class="tarjeta">
-        <p>No se encontró ninguna persona ni conviviente con ese DNI.</p>
+        <h2>Buscar persona</h2>
+
+        <form method="get">
+            <input type="text" name="q" placeholder="DNI, nombre o apellido" value="{{ query }}">
+            <button class="btn2" type="submit">Buscar</button>
+        </form>
     </div>
-{% elif conviviente_encontrado %}
+
+    <!-- ❌ SIN RESULTADOS -->
+    {% if query and not personas and not convivientes %}
     <div class="tarjeta">
-        <p>
-            <strong>Atención:</strong> el DNI buscado pertenece al conviviente
-            <strong>{{ conviviente_encontrado.nombre }} {{ conviviente_encontrado.apellido }}</strong>
-            {% if conviviente_encontrado.parentesco %}
-                ({{ conviviente_encontrado.parentesco }})
-            {% endif %}
-            de <strong>{{ persona.nombre }} {{ persona.apellido }}</strong>.
-        </p>
-        <p>La ayuda será registrada en la ficha principal de esa persona.</p>
+        <p>No se encontraron resultados.</p>
     </div>
-{% endif %}
+    {% endif %}
 
-{% if persona %}
+    <!-- 👥 PERSONAS -->
+    {% if personas %}
     <div class="tarjeta">
-        <h2>Persona seleccionada</h2>
-        <p><strong>Nombre:</strong> {{ persona.nombre }} {{ persona.apellido }}</p>
-        <p><strong>DNI:</strong> {{ persona.dni }}</p>
-        <p><strong>Dirección:</strong> {{ persona.direccion }}</p>
-        <p><strong>Barrio:</strong> {{ persona.barrio }}</p>
-
-        <h3>Convivientes declarados</h3>
+        <h2>Personas encontradas</h2>
         <ul>
-            {% for conviviente in persona.convivientes.all %}
+            {% for p in personas %}
                 <li>
-                    {{ conviviente.nombre }} {{ conviviente.apellido }}
-                    {% if conviviente.parentesco %}- {{ conviviente.parentesco }}{% endif %}
-                    {% if conviviente.dni %}- DNI {{ conviviente.dni }}{% endif %}
+                    <strong>{{ p.nombre }} {{ p.apellido }}</strong> - DNI {{ p.dni }}
+
+                    <a class="btn" style="padding: 5px 10px; font-size: 0.9em;"
+                    href="?q={{ query }}&persona_id={{ p.id }}">
+                    Seleccionar
+                    </a>
                 </li>
-            {% empty %}
-                <li>No tiene convivientes declarados.</li>
             {% endfor %}
         </ul>
     </div>
+    {% endif %}
 
+    <!-- 🏠 CONVIVIENTES -->
+    {% if convivientes %}
     <div class="tarjeta">
-        <h2>Registrar entrega</h2>
+        <h2>Convivientes encontrados</h2>
+        <ul>
+            {% for c in convivientes %}
+                <li>
+                    <strong>{{ c.nombre }} {{ c.apellido }}</strong> - DNI {{ c.dni }}
 
-        {% if secretaria %}
-            <p><strong>Secretaría:</strong> {{ secretaria.nombre }}</p>
-        {% endif %}
+                    <div>
+                        <a class="btn" style="padding: 5px 10px; font-size: 0.9em;"
+                        href="?q={{ query }}&conviviente_id={{ c.id }}&accion=grupo">
+                        Grupo familiar
+                        </a>
 
-        <form method="post">
-            {% csrf_token %}
-            <input type="hidden" name="dni" value="{{ dni }}">
-
-            {{ form.as_p }}
-
-            <a class="btn" type="submit">Guardar entrega</a>
-        </form>
+                        <a class="btn" style="padding: 5px 10px; font-size: 0.9em;"
+                        href="?q={{ query }}&conviviente_id={{ c.id }}&accion=independizar">
+                        Independizar
+                        </a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
+    {% endif %}
+
+{% endif %}
+
+<!-- ⚠️ AVISO SI ES CONVIVIENTE -->
+{% if conviviente_encontrado %}
+<div class="tarjeta">
+    <p>
+        <strong>Atención:</strong> el DNI pertenece a un conviviente
+        <strong>{{ conviviente_encontrado.nombre }} {{ conviviente_encontrado.apellido }}</strong>.
+    </p>
+</div>
+{% endif %}
+
+<!-- 👤 PERSONA SELECCIONADA -->
+{% if persona %}
+<div class="tarjeta">
+    <h2>Persona seleccionada</h2>
+
+    <p><strong>Nombre:</strong> {{ persona.nombre }} {{ persona.apellido }}</p>
+    <p><strong>DNI:</strong> {{ persona.dni }}</p>
+    <p><strong>Dirección:</strong> {{ persona.direccion }}</p>
+    <p><strong>Barrio:</strong> {{ persona.barrio }}</p>
+
+    <h3>Convivientes declarados</h3>
+    <ul>
+        {% for conviviente in persona.convivientes.all %}
+            <li>
+                {{ conviviente.nombre }} {{ conviviente.apellido }}
+                {% if conviviente.parentesco %}- {{ conviviente.parentesco }}{% endif %}
+                {% if conviviente.dni %}- DNI {{ conviviente.dni }}{% endif %}
+            </li>
+        {% empty %}
+            <li>No tiene convivientes declarados.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- 📦 FORM ENTREGA -->
+<div class="tarjeta">
+    <h2>Registrar entrega</h2>
+
+    {% if secretaria %}
+        <p><strong>Secretaría:</strong> {{ secretaria.nombre }}</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="q" value="{{ query }}">
+
+        {{ form.as_p }}
+
+        <button class="btn" type="submit">Guardar entrega</button>
+        <a class="btn" href="?q={{ query }}">Cancelar</a>
+    </form>
+</div>
 {% endif %}
 
 {% endblock %}

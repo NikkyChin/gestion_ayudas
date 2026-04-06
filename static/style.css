@@ -42,12 +42,7 @@ h1, h2, h3 {
 }
 
 a {
-    background-color: #1e3a5f;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 6px;
-    cursor: pointer;
+    color: #1e3a5f;
 }
 
 .btn {
@@ -64,6 +59,36 @@ a {
 
 .btn:hover {
     background-color: #16314f;
+}
+
+.btn2 {
+    background-color: #1e3a5f;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.btn2:hover {
+    background-color: #16314f;
+}
+
+.btn2:active {
+    transform: scale(0.97);
+}
+
+.btn2.primary {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+}
+
+.btn2.primary:hover {
+    background-color: #1d4ed8;
 }
 
 input,
@@ -126,4 +151,41 @@ form button {
     padding: 10px 16px;
     border-radius: 6px;
     cursor: pointer;
+}
+
+.lista-personas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item-persona {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #f9fafb;
+}
+
+.persona-info {
+    font-size: 14px;
+}
+
+.tabla {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla th,
+.tabla td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+
+}
+
+.tabla th {
+    background-color: #f3f4f6;
 }
