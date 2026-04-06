@@ -9,11 +9,25 @@
 </head>
 <body>
     <nav>
-        <a href="{% url 'usuarios:inicio' %}">Inicio</a>
-        <a href="{% url 'personas:lista_personas' %}">Personas</a>
-        <a href="{% url 'secretarias:lista_secretarias' %}">Secretarías</a>
-        <a href="{% url 'secretarias:mis_ayudas' %}">Ayudas</a>
-        <a href="/admin/">Admin</a>
+        {% if request.user.is_authenticated %}
+            
+            {% if request.tiene_secretaria %}
+                <a href="{% url 'usuarios:inicio' %}">Inicio</a>
+                <a href="{% url 'personas:lista_personas' %}">Personas</a>
+                <a href="{% url 'secretarias:mis_ayudas' %}">Mis ayudas</a>
+                <a href="{% url 'solicitudes:entregar_ayuda' %}">Entregar ayuda</a>
+            {% endif %}
+
+            <form method="post" action="{% url 'logout' %}" style="display:inline; margin-left: 15px;">
+                {% csrf_token %}
+                <button style="background-color: #1e3a5f; color: white; border: none; cursor: pointer; font-weight: bold; font-size: 15px;" type="submit">
+                    Cerrar sesión
+                </button>
+            </form>
+
+        {% else %}
+            <a href="{% url 'login' %}">Iniciar sesión</a>
+        {% endif %}
     </nav>
 
     <div class="contenedor">

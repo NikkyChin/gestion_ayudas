@@ -1,15 +1,17 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Persona, Conviviente
 from .forms import PersonaForm
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def lista_personas(request):
     personas = Persona.objects.all()
     return render(request, "personas/lista_personas.html", {
         "personas": personas
     })
 
-
+@login_required
 def detalle_persona(request, persona_id):
     persona = get_object_or_404(Persona, id=persona_id)
     return render(request, "personas/detalle_persona.html", {
@@ -17,6 +19,7 @@ def detalle_persona(request, persona_id):
     })
 
 
+@login_required
 def crear_persona(request):
     if request.method == "POST":
         form = PersonaForm(request.POST)
@@ -60,26 +63,7 @@ def crear_persona(request):
         "form": form
     })
 
-
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Persona, Conviviente
-from .forms import PersonaForm
-
-
-def lista_personas(request):
-    personas = Persona.objects.all()
-    return render(request, "personas/lista_personas.html", {
-        "personas": personas
-    })
-
-
-def detalle_persona(request, persona_id):
-    persona = get_object_or_404(Persona, id=persona_id)
-    return render(request, "personas/detalle_persona.html", {
-        "persona": persona
-    })
-
-
+@login_required
 def crear_persona(request):
     if request.method == "POST":
         form = PersonaForm(request.POST)
@@ -113,7 +97,7 @@ def crear_persona(request):
         "modo_edicion": False
     })
 
-
+@login_required
 def editar_persona(request, persona_id):
     persona = get_object_or_404(Persona, id=persona_id)
 

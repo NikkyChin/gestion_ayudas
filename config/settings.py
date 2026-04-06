@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'usuarios.middleware.SecretariaMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -111,6 +112,9 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "usuarios:inicio"
+LOGOUT_REDIRECT_URL = "login"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/

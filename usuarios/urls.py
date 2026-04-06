@@ -5,4 +5,5 @@ app_name = "usuarios"
 
 urlpatterns = [
     path("", views.inicio, name="inicio"),
+    path("sin-permiso/", views.sin_permiso, name="sin_permiso"),
 ]

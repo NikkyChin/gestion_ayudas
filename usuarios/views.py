@@ -18,3 +18,7 @@ def inicio(request):
         "secretaria": secretaria,
         "ayudas": ayudas,
     })
+
+
+def sin_permiso(request):
+    return render(request, "usuarios/sin_permiso.html")
