@@ -6,9 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Sistema Municipal{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo_muni.ico' %}">
 </head>
 <body>
     <nav>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <img src="{% static 'img/logo_muni.png' %}" alt="Rawson" style="height:40px;">
+        </div>
         {% if request.user.is_authenticated %}
             
             {% if request.tiene_secretaria %}
@@ -35,4 +39,8 @@
         {% endblock %}
     </div>
 </body>
+<footer style="margin-top:40px; padding:15px; text-align:center; background:#f1f1f1; font-size:14px; color:#555;">
+  Sistema de Gestión de Ayudas - Municipalidad de Rawson  
+  <br>
+</footer>
 </html>

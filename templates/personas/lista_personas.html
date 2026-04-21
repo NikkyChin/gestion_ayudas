@@ -10,7 +10,7 @@
     <form method="get" style="margin-bottom: 15px;">
         <input type="text" name="q" placeholder="Buscar por nombre, apellido o DNI">
         <button type="submit">Buscar</button>
-        <a class="btn" href="{% url 'personas:crear_persona' %}">+ Nueva persona</a>
+        <a class="btn" style="padding: 7.5px 16px;" href="{% url 'personas:crear_persona' %}">+ Nueva persona</a>
     </form>
 </div>
 
@@ -34,8 +34,8 @@
                         <td>{{ persona.nombre }}</td>
                         <td>{{ persona.barrio }}</td>
                         <td>
-                            <a class="accion-icono" href="{% url 'personas:detalle_persona' persona.id %}" title="Ver detalle">👁️</a>
-                            <a class="accion-icono" href="{% url 'personas:editar_persona' persona.id %}" title="Editar">✏️</a>
+                            <a class="accion-icono" href="{% url 'personas:detalle_persona' persona.id %}" title="Ver detalle">Detalle</a>
+                            <a class="accion-icono" href="{% url 'personas:editar_persona' persona.id %}" title="Editar">Editar</a>
                         </td>
                     </tr>
                 {% endfor %}

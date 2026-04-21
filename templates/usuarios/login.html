@@ -1,10 +1,18 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Iniciar sesión{% endblock %}
 
 {% block content %}
-<div class="tarjeta" style="max-width: 450px; margin: 40px auto;">
-    <h1>Iniciar sesión</h1>
+<div class="tarjeta" style="max-width: 450px; margin: 20px auto;">
+    <div style="display:flex; justify-content:center; margin-bottom: 20px;">
+        <img 
+            src="{% static 'img/logo_muni.png' %}" 
+            alt="Rawson"
+            style="max-height: 200px; width: auto; object-fit: contain;"
+        >
+    </div>
+    <h1 style="text-align:center;">Iniciar sesión</h1>
 
     {% if form.errors %}
         <p style="color: red;">Usuario o contraseña incorrectos.</p>

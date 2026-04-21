@@ -13,7 +13,7 @@
         <h2>Buscar persona</h2>
 
         <form method="get">
-            <input type="text" name="q" placeholder="DNI, nombre o apellido" value="{{ query }}">
+            <input type="text" name="q" placeholder="DNI, nombre o apellido" value="{{ query|default:'' }}" style="width: 100%; padding: 8px; margin-bottom: 10px;">
             <button class="btn2" type="submit">Buscar</button>
         </form>
     </div>
@@ -120,7 +120,7 @@
 
         {{ form.as_p }}
 
-        <button class="btn" type="submit">Guardar entrega</button>
+        <button class="btn" type="submit" href="{% url 'usuarios:inicio' %}">Guardar entrega</button>
         <a class="btn" href="?q={{ query }}">Cancelar</a>
     </form>
 </div>
