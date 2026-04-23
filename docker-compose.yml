@@ -1,0 +1,45 @@
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: ayudas_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+
+  web:
+    build: .
+    image: nicoudc/gestion_ayudas:v0.1
+    container_name: ayudas_web
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      #- .:/gestion_ayudas
+      - static_volume:/gestion_ayudas/staticfiles
+      - media_volume:/gestion_ayudas/media
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:alpine
+    container_name: ayudas_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - static_volume:/gestion_ayudas/staticfiles
+      - media_volume:/gestion_ayudas/media
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
