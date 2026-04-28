@@ -11,6 +11,12 @@
 
 <form method="post">
     {% csrf_token %}
+    
+        {% if form.errors %}
+            <div style="background: #ffcccc; padding: 10px; border-radius: 5px;">
+                {{ form.errors }}
+            </div>
+        {% endif %}
 
     {{ form.as_p }}
 
@@ -38,32 +44,33 @@
 
     <br><br>
 
-    <a class="btn" type="submit">Guardar</a>
+
     <a class="btn" href="{% url 'personas:lista_personas' %}">Volver</a>
+    <button type="submit">Guardar</button>
 </form>
 
 <script>
-function agregarConviviente() {
-    const container = document.getElementById("convivientes-container");
+    function agregarConviviente() {
+        const container = document.getElementById("convivientes-container");
 
-    const div = document.createElement("div");
-    div.classList.add("conviviente-item");
+        const div = document.createElement("div");
+        div.classList.add("conviviente-item");
 
-    div.innerHTML = `
-        <hr>
-        <input type="text" name="conviviente_nombre" placeholder="Nombre">
-        <input type="text" name="conviviente_apellido" placeholder="Apellido">
-        <input type="text" name="conviviente_dni" placeholder="DNI">
-        <input type="text" name="conviviente_parentesco" placeholder="Parentesco">
-        <a class="btn" type="button" onclick="eliminarConviviente(this)">Eliminar conviviente</a>
-    `;
+        div.innerHTML = `
+            <hr>
+            <input type="text" name="conviviente_nombre" placeholder="Nombre">
+            <input type="text" name="conviviente_apellido" placeholder="Apellido">
+            <input type="text" name="conviviente_dni" placeholder="DNI">
+            <input type="text" name="conviviente_parentesco" placeholder="Parentesco">
+            <a class="btn" type="button" onclick="eliminarConviviente(this)">Eliminar conviviente</a>
+        `;
 
-    container.appendChild(div);
-}
+        container.appendChild(div);
+    }
 
-function eliminarConviviente(boton) {
-    boton.closest(".conviviente-item").remove();
-}
+    function eliminarConviviente(boton) {
+        boton.closest(".conviviente-item").remove();
+    }
 </script>
 
 

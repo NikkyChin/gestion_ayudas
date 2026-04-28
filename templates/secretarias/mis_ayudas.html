@@ -31,13 +31,13 @@
 
                             <form method="post" action="{% url 'secretarias:toggle_ayuda' ayuda.id %}" style="display:inline;">
                                 {% csrf_token %}
-                                <a class="btn" type="submit">
+                                <button type="submit">
                                     {% if ayuda.activa %}
                                         Desactivar
                                     {% else %}
                                         Activar
                                     {% endif %}
-                                </a>
+                                </button>
                             </form>
                         </div>
                     </li>

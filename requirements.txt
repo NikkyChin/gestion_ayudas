@@ -1,6 +1,7 @@
 asgiref==3.11.1
-sqlparse==0.5.5
 Django>=4.2,<6.1
+Faker==40.15.0
+sqlparse==0.5.5
 gunicorn>=21.2
 psycopg2-binary>=2.9
 python-dotenv>=1.0

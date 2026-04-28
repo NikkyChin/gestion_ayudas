@@ -65,7 +65,7 @@ def crear_ayuda(request):
     else:
         form = AyudaForm()
 
-    return render(request, "secretarias/form_ayuda.html", {
+    return render(request, "secretarias/ayuda_form.html", {
         "form": form,
         "titulo": "Crear ayuda",
         "secretaria": secretaria,
@@ -95,7 +95,7 @@ def editar_ayuda(request, ayuda_id):
     else:
         form = AyudaForm(instance=ayuda)
 
-    return render(request, "secretarias/form_ayuda.html", {
+    return render(request, "secretarias/ayuda_form.html", {
         "form": form,
         "titulo": "Editar ayuda",
         "secretaria": secretaria,
