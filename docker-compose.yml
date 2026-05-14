@@ -17,7 +17,7 @@ services:
              python manage.py collectstatic --noinput &&
              gunicorn config.wsgi:application --bind 0.0.0.0:8000"
     volumes:
-      #- .:/gestion_ayudas
+      - .:/gestion_ayudas
       - static_volume:/gestion_ayudas/staticfiles
       - media_volume:/gestion_ayudas/media
     ports:

@@ -54,7 +54,7 @@ a {
     cursor: pointer;
     text-decoration: none;
     display: inline-block;
-    margin-top: 5px;
+    margin: 5px;
 }
 
 .btn:hover {
@@ -158,4 +158,12 @@ form button {
 
 .tabla th {
     background-color: #f3f4f6;
+}
+
+.pagi {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
 }

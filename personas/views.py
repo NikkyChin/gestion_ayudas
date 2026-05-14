@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Persona, Conviviente
 from .forms import PersonaForm
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Q
 
 @login_required
@@ -13,22 +14,25 @@ def lista_personas(request):
             Q(nombre__icontains=q) |
             Q(apellido__icontains=q) |
             Q(dni__icontains=q)
-        )
+        ).order_by("apellido")
     else:
-        personas = Persona.objects.all()
+        personas = Persona.objects.all().order_by("apellido")
+
+    paginator = Paginator(personas, 20)
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     return render(request, "personas/lista_personas.html", {
-        "personas": personas,
+        "personas": page_obj,
+        "page_obj": page_obj,
         "q": q
     })
 
 @login_required
 def detalle_persona(request, persona_id):
     persona = get_object_or_404(Persona, id=persona_id)
-    return render(request, "personas/detalle_persona.html", {
-        "persona": persona
-    })
-
+    return render(request, "personas/detalle_persona.html", { "persona": persona })
 
 @login_required
 def crear_persona(request):
