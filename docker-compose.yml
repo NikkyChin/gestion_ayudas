@@ -10,7 +10,7 @@ services:
 
   web:
     build: .
-    image: nicoudc/gestion_ayudas:v0.1.1
+    image: nicoudc/gestion_ayudas:v0.1.2
     container_name: ayudas_web
     command: >
       sh -c "python manage.py makemigrations && python manage.py migrate &&

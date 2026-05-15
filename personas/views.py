@@ -4,19 +4,48 @@ from .forms import PersonaForm
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView
+from .models import Persona
 
 @login_required
 def lista_personas(request):
-    q = request.GET.get("q")
 
+    q = request.GET.get("q")
+    orden = request.GET.get("orden")
+    barrio = request.GET.get("barrio")
+
+    personas = Persona.objects.all()
+
+    # BUSCADOR
     if q:
-        personas = Persona.objects.filter(
+        personas = personas.filter(
             Q(nombre__icontains=q) |
             Q(apellido__icontains=q) |
             Q(dni__icontains=q)
-        ).order_by("apellido")
+        )
+
+    # FILTRO POR BARRIO
+    if barrio:
+        personas = personas.filter(
+            barrio__icontains=barrio
+        )
+
+    # ORDENAMIENTO
+    if orden == "az":
+        personas = personas.order_by("apellido")
+
+    elif orden == "za":
+        personas = personas.order_by("-apellido")
+
+    elif orden == "dni_asc":
+        personas = personas.order_by("dni")
+
+    elif orden == "dni_desc":
+        personas = personas.order_by("-dni")
+
     else:
-        personas = Persona.objects.all().order_by("apellido")
+        personas = personas.order_by("apellido")
 
     paginator = Paginator(personas, 20)
 
@@ -26,7 +55,9 @@ def lista_personas(request):
     return render(request, "personas/lista_personas.html", {
         "personas": page_obj,
         "page_obj": page_obj,
-        "q": q
+        "q": q,
+        "orden": orden,
+        "barrio": barrio,
     })
 
 @login_required
@@ -104,3 +135,8 @@ def editar_persona(request, persona_id):
         "persona": persona,
         "modo_edicion": True
     })
+
+class EliminarPersonaView(DeleteView):
+    model = Persona
+    template_name = "personas/confirmar_eliminar.html"
+    success_url = reverse_lazy("personas:lista_personas")

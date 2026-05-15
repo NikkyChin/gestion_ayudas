@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="contenedor-formulario">
+  <h2>Confirmar eliminación</h2>
+
+  <p>
+    ¿Está seguro que desea eliminar a
+    <strong>{{ object.nombre }} {{ object.apellido }}</strong>?
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <button type="submit" class="btn btn-danger">Confirmar eliminación</button>
+    <a href="{% url 'personas:lista_personas' %}" class="btn">Cancelar</a>
+  </form>
+</div>
+
+{% endblock %}
