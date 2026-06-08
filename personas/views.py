@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView
 from .models import Persona
+from secretarias.models import Secretaria
 
 @login_required
 def lista_personas(request):
@@ -136,7 +137,22 @@ def editar_persona(request, persona_id):
         "modo_edicion": True
     })
 
-class EliminarPersonaView(DeleteView):
-    model = Persona
-    template_name = "personas/confirmar_eliminar.html"
-    success_url = reverse_lazy("personas:lista_personas")
+@login_required
+def imprimir_persona(request, persona_id):
+
+    persona = get_object_or_404(Persona, id=persona_id)
+
+    grupo = request.user.groups.first()
+
+    secretaria = None
+
+    if grupo:
+        secretaria = Secretaria.objects.filter(
+            nombre=grupo.name,
+            activa=True
+        ).first()
+
+    return render(request, "personas/imprimir_persona.html", {
+        "persona": persona,
+        "secretaria": secretaria,
+    })

@@ -20,6 +20,7 @@
                 <a href="{% url 'personas:lista_personas' %}">Personas</a>
                 <a href="{% url 'secretarias:mis_ayudas' %}">Mis ayudas</a>
                 <a href="{% url 'solicitudes:entregar_ayuda' %}">Entregar ayuda</a>
+                <a href="{% url 'solicitudes:estadisticas_entregas' %}">Estadísticas</a>
             {% endif %}
 
             <form method="post" action="{% url 'logout' %}" style="display:inline; margin-left: 15px;">

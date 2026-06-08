@@ -9,6 +9,7 @@
     <p><strong>Dirección:</strong> {{ persona.direccion }}</p>
     <p><strong>Barrio:</strong> {{ persona.barrio }}</p>
     <p><strong>Teléfono:</strong> {{ persona.telefono }}</p>
+    <p><strong>Estado:</strong> {% if persona.activa %}Activa{% else %}Inactiva{% endif %}</p>
     <p><strong>Observaciones:</strong> {{ persona.observaciones }}</p>
 
     <hr>
@@ -47,4 +48,5 @@
 
     <a class="btn" href="{% url 'personas:lista_personas' %}">Volver al listado</a>
     <a class="btn" href="{% url 'personas:editar_persona' persona.id %}">Editar persona</a>
+    <a class="btn" href="{% url 'personas:imprimir_persona' persona.id %}" target="_blank">Imprimir detalle</a>
 {% endblock %}

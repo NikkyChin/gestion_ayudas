@@ -6,7 +6,7 @@ app_name = "personas"
 urlpatterns = [
     path("", views.lista_personas, name="lista_personas"),
     path("crear/", views.crear_persona, name="crear_persona"),
-    path("eliminar/<int:pk>/", views.EliminarPersonaView.as_view(), name="eliminar_persona"),
     path("<int:persona_id>/", views.detalle_persona, name="detalle_persona"),
     path("<int:persona_id>/editar/", views.editar_persona, name="editar_persona"),
+    path("<int:persona_id>/imprimir/", views.imprimir_persona, name="imprimir_persona"),
 ]

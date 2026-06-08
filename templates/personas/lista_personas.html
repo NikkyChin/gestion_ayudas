@@ -1,187 +1,178 @@
-{% extends "base.html" %} {% block title %}Personas{% endblock %} {% block
-content %}
+{% extends "base.html" %}
 
-<h1>Personas registradas</h1>
+{% block title %}Personas{% endblock %}
 
-<div class="tarjeta">
-  <form
-    method="get"
-    style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap"
-  >
-    <input
-      type="text"
-      name="q"
-      placeholder="Buscar por nombre, apellido o DNI"
-      value="{{ q|default:'' }}"
-    />
+{% block content %}
 
-    <input
-      type="text"
-      name="barrio"
-      placeholder="Filtrar por barrio"
-      value="{{ barrio|default:'' }}"
-    />
+    <h1>Personas registradas</h1>
 
-    <select name="orden">
-      <option value="">Ordenar</option>
+    <div class="tarjeta">
 
-      <option value="az" {% if orden="" ="az" %}selected{% endif %}>
-        Apellido A-Z
-      </option>
+        <form method="get"
+            style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
 
-      <option value="za" {% if orden="" ="za" %}selected{% endif %}>
-        Apellido Z-A
-      </option>
+            <input
+                type="text"
+                name="q"
+                placeholder="Buscar por nombre, apellido o DNI"
+                value="{{ q|default:'' }}"
+            >
 
-      <option value="dni_asc" {% if orden="" ="dni_asc" %}selected{% endif %}>
-        DNI menor a mayor
-      </option>
+            <input
+                type="text"
+                name="barrio"
+                placeholder="Filtrar por barrio"
+                value="{{ barrio|default:'' }}"
+            >
 
-      <option value="dni_desc" {% if orden="" ="dni_desc" %}selected{% endif %}>
-        DNI mayor a menor
-      </option>
-    </select>
+            <select name="orden">
 
-    <button type="submit">Aplicar</button>
+                <option value="">Ordenar</option>
 
-    <a
-      class="btn"
-      style="padding: 7.5px 16px"
-      href="{% url 'personas:lista_personas' %}"
-    >
-      Limpiar
-    </a>
+                <option value="az"
+                    {% if orden == "az" %}selected{% endif %}>
+                    Apellido A-Z
+                </option>
 
-    <a
-      class="btn"
-      style="padding: 7.5px 16px"
-      href="{% url 'personas:crear_persona' %}"
-    >
-      + Nueva persona
-    </a>
-  </form>
-</div>
+                <option value="za"
+                    {% if orden == "za" %}selected{% endif %}>
+                    Apellido Z-A
+                </option>
 
-<div class="tarjeta">
-  {% if personas %}
+                <option value="dni_asc"
+                    {% if orden == "dni_asc" %}selected{% endif %}>
+                    DNI menor a mayor
+                </option>
 
-  <table
-    class="tabla"
-    style="width: 100%; border-collapse: collapse; text-align: left"
-  >
-    <thead>
-      <tr>
-        <th>DNI</th>
-        <th>Apellido</th>
-        <th>Nombre</th>
-        <th>Barrio</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
+                <option value="dni_desc"
+                    {% if orden == "dni_desc" %}selected{% endif %}>
+                    DNI mayor a menor
+                </option>
 
-    <tbody>
-      {% for persona in personas %}
+            </select>
 
-      <tr>
-        <td>{{ persona.dni }}</td>
+            <button style="padding: 7.5px 16px;" type="submit">
+                Aplicar
+            </button>
 
-        <td>{{ persona.apellido }}</td>
+            <a class="btn"
+            style="padding: 7.5px 16px;"
+            href="{% url 'personas:lista_personas' %}">
+            Limpiar
+            </a>
 
-        <td>{{ persona.nombre }}</td>
+            <a class="btn"
+            style="padding: 7.5px 16px;"
+            href="{% url 'personas:crear_persona' %}">
+            + Nueva persona
+            </a>
 
-        <td>{{ persona.barrio }}</td>
+        </form>
 
-        <td>
-          <a
-            class="accion-icono"
-            href="{% url 'personas:detalle_persona' persona.id %}"
-            title="Ver detalle"
-          >
-            Detalle
-          </a>
+    </div>
 
-          <a
-            class="accion-icono"
-            href="{% url 'personas:editar_persona' persona.id %}"
-            title="Editar"
-          >
-            Editar
-          </a>
+    <div class="tarjeta">
 
-          <a
-            class="accion-icono eliminar"
-            href="{% url 'personas:eliminar_persona' persona.id %}"
-            title="Eliminar"
-          >
-            Eliminar
-          </a>
-        </td>
-      </tr>
+        {% if personas %}
 
-      {% endfor %}
-    </tbody>
-  </table>
+            <table class="tabla"
+                style="width: 100%; border-collapse: collapse; text-align: left;">
 
-  {% else %}
+                <thead>
+                    <tr>
+                        <th>DNI</th>
+                        <th>Apellido</th>
+                        <th>Nombre</th>
+                        <th>Barrio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
 
-  <p>No hay personas registradas.</p>
+                <tbody>
 
-  {% endif %}
+                    {% for persona in personas %}
 
-  <div
-    class="pagi"
-    style="
-      margin-top: 20px;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      justify-content: center;
-    "
-  >
-    {% if page_obj.has_previous %}
+                        <tr>
 
-    <a
-      class="btn"
-      style="margin: 5px"
-      href="?page=1{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}"
-    >
-      Primera
-    </a>
+                            <td>{{ persona.dni }}</td>
 
-    <a
-      class="btn"
-      style="margin: 5px"
-      href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}"
-    >
-      Anterior
-    </a>
+                            <td>{{ persona.apellido }}</td>
 
-    {% endif %}
+                            <td>{{ persona.nombre }}</td>
 
-    <span>
-      Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
-    </span>
+                            <td>{{ persona.barrio }}</td>
 
-    {% if page_obj.has_next %}
+                            <td>
 
-    <a
-      class="btn"
-      style="margin: 5px"
-      href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}"
-    >
-      Siguiente
-    </a>
+                                <a class="accion-icono" style="padding-right: 10px;"
+                                href="{% url 'personas:detalle_persona' persona.id %}"
+                                title="Ver detalle">
+                                Detalle
+                                </a>
 
-    <a
-      class="btn"
-      style="margin: 5px"
-      href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}"
-    >
-      Última
-    </a>
+                                <a class="accion-icono" style="padding-right: 10px; padding-left: 10px;"
+                                href="{% url 'personas:editar_persona' persona.id %}"
+                                title="Editar">
+                                Editar
+                                </a>
 
-    {% endif %}
-  </div>
-</div>
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        {% else %}
+
+            <p>No hay personas registradas.</p>
+
+        {% endif %}
+
+        <div class="pagi"
+            style="margin-top: 20px; display: flex; gap: 10px; align-items: center; justify-content: center;">
+
+            {% if page_obj.has_previous %}
+
+                <a class="btn"
+                style="margin: 5px;"
+                href="?page=1{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                    Primera
+                </a>
+
+                <a class="btn"
+                style="margin: 5px;"
+                href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                    Anterior
+                </a>
+
+            {% endif %}
+
+            <span>
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+
+                <a class="btn"
+                style="margin: 5px;"
+                href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                    Siguiente
+                </a>
+
+                <a class="btn"
+                style="margin: 5px;"
+                href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                    Última
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
 
 {% endblock %}
