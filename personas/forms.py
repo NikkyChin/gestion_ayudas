@@ -16,6 +16,7 @@ class PersonaForm(forms.ModelForm):
             "barrio",
             "telefono",
             "observaciones",
+            "encuesta_social_pendiente",
             "activa",
         ]
 
