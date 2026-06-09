@@ -105,10 +105,14 @@ def entregar_ayuda(request):
 
 @login_required
 def estadisticas_entregas(request):
+
     grupo = request.user.groups.first()
 
     secretaria = None
+
     estadisticas = []
+    estadisticas_barrios = []
+    estadisticas_barrio_ayuda = []
 
     mes = request.GET.get("mes", "todos")
     anio = request.GET.get("anio", str(datetime.now().year))
@@ -122,16 +126,20 @@ def estadisticas_entregas(request):
     entregas = EntregaAyuda.objects.none()
 
     if secretaria:
+
         entregas = EntregaAyuda.objects.filter(
             ayuda__secretaria=secretaria
         )
 
-        # 📅 filtro por mes y año
         if mes != "todos":
-            entregas = entregas.filter(fecha__month=mes)
+            entregas = entregas.filter(
+                fecha__month=mes
+            )
 
         if anio:
-            entregas = entregas.filter(fecha__year=anio)
+            entregas = entregas.filter(
+                fecha__year=anio
+            )
 
         estadisticas = (
             entregas
@@ -140,10 +148,37 @@ def estadisticas_entregas(request):
             .order_by("-total")
         )
 
-    total_general = sum(item["total"] for item in estadisticas)
+        estadisticas_barrios = (
+            entregas
+            .exclude(persona__barrio="")
+            .values("persona__barrio")
+            .annotate(total=Count("id"))
+            .order_by("-total")
+        )
+
+        estadisticas_barrio_ayuda = (
+            entregas
+            .exclude(persona__barrio="")
+            .values(
+                "persona__barrio",
+                "ayuda__nombre"
+            )
+            .annotate(total=Count("id"))
+            .order_by(
+                "persona__barrio",
+                "-total"
+            )
+        )
+
+    total_general = sum(
+        item["total"]
+        for item in estadisticas
+    )
 
     return render(request, "solicitudes/estadisticas.html", {
         "estadisticas": estadisticas,
+        "estadisticas_barrios": estadisticas_barrios,
+        "estadisticas_barrio_ayuda": estadisticas_barrio_ayuda,
         "mes": mes,
         "anio": anio,
         "secretaria": secretaria,
@@ -157,6 +192,8 @@ def imprimir_estadisticas(request):
 
     secretaria = None
     estadisticas = []
+    estadisticas_barrios = []
+    estadisticas_barrio_ayuda = []
 
     mes = request.GET.get("mes", "todos")
     anio = request.GET.get("anio", str(datetime.now().year))
@@ -194,6 +231,28 @@ def imprimir_estadisticas(request):
             .order_by("-total")
         )
 
+        estadisticas_barrios = (
+            entregas
+            .exclude(persona__barrio="")
+            .values("persona__barrio")
+            .annotate(total=Count("id"))
+            .order_by("-total")
+        )
+
+        estadisticas_barrio_ayuda = (
+            entregas
+            .exclude(persona__barrio="")
+            .values(
+                "persona__barrio",
+                "ayuda__nombre"
+            )
+            .annotate(total=Count("id"))
+            .order_by(
+                "persona__barrio",
+                "-total"
+            )
+        )
+
     total_general = sum(item["total"] for item in estadisticas)
 
     meses = {
@@ -219,4 +278,6 @@ def imprimir_estadisticas(request):
         "mes": nombre_mes,
         "anio": anio,
         "total_general": total_general,
+        "estadisticas_barrios": estadisticas_barrios,
+        "estadisticas_barrio_ayuda": estadisticas_barrio_ayuda,
     })

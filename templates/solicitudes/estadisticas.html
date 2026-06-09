@@ -80,7 +80,7 @@
 
         </form>
 
-        <div class="card shadow-sm">
+        <div class="tarjeta">
 
             <div class="card-body">
 
@@ -93,8 +93,8 @@
 
                     <thead>
                         <tr>
-                            <th>Ayuda</th>
-                            <th>Cantidad entregada</th>
+                            <th class="text-start">Ayuda</th>
+                            <th class="text-end" style="text-align: right;">Cantidad entregada</th>
                         </tr>
                     </thead>
 
@@ -103,8 +103,10 @@
                         {% for item in estadisticas %}
 
                             <tr>
-                                <td>{{ item.ayuda__nombre }}</td>
-                                <td>{{ item.total }}</td>
+                                <td class="text-start">{{ item.ayuda__nombre }}</td>
+                                <td class="text-end" style="text-align: right;">
+                                    {{ item.total }}
+                                </td>
                             </tr>
 
                         {% empty %}
@@ -113,6 +115,109 @@
                                 <td colspan="2">
                                     No hay entregas registradas.
                                 </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                <hr>
+
+                <h4>
+                    Asistencia por barrio
+                </h4>
+
+                <table class="table table-striped" style="width: 100%; border-collapse: collapse; text-align: left;">
+
+                    <thead>
+
+                        <tr>
+                            <th class="text-start">Barrio</th>
+                            <th class="text-end" style="text-align: right;">Total asistencias</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in estadisticas_barrios %}
+
+                            <tr>
+
+                                <td class="text-start">
+                                    {{ item.persona__barrio }}
+                                </td>
+
+                                <td class="text-end" style="text-align: right;">
+                                    {{ item.total }}
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+
+                                <td colspan="2">
+                                    No hay datos.
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                <hr>
+
+                <h4>
+                    Ayudas entregadas por barrio
+                </h4>
+
+                <table class="table table-striped" style="width: 100%; border-collapse: collapse; text-align: left;">
+
+                    <thead>
+
+                        <tr>
+                            <th class="text-start">Barrio</th>
+                            <th class="text-start">Ayuda</th>
+                            <th class="text-end" style="text-align: right;">Cantidad</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in estadisticas_barrio_ayuda %}
+
+                            <tr>
+
+                                <td class="text-start">
+                                    {{ item.persona__barrio }}
+                                </td>
+
+                                <td class="text-start">
+                                    {{ item.ayuda__nombre }}
+                                </td>
+
+                                <td class="text-end" style="text-align: right;">
+                                    {{ item.total }}
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+
+                                <td colspan="3">
+                                    No hay datos.
+                                </td>
+
                             </tr>
 
                         {% endfor %}

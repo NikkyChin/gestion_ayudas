@@ -173,6 +173,95 @@
 
         </table>
 
+        <h2 style="margin-top:40px;">
+            Asistencia por barrio
+        </h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Barrio</th>
+                    <th>Total asistencias</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in estadisticas_barrios %}
+
+                    <tr>
+
+                        <td>{{ item.persona__barrio }}</td>
+
+                        <td>{{ item.total }}</td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="2">
+                            No hay datos registrados.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <h2 style="margin-top:40px;">
+            Ayudas entregadas por barrio
+        </h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Barrio</th>
+                    <th>Ayuda</th>
+                    <th>Cantidad</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in estadisticas_barrio_ayuda %}
+
+                    <tr>
+
+                        <td>{{ item.persona__barrio }}</td>
+
+                        <td>{{ item.ayuda__nombre }}</td>
+
+                        <td>{{ item.total }}</td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+
+                        <td colspan="3">
+                            No hay datos registrados.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
         <div class="total">
 
             <strong>
