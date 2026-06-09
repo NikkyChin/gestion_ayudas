@@ -11,61 +11,28 @@
         <form method="get"
             style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
 
-            <input
-                type="text"
-                name="q"
-                placeholder="Buscar por nombre, apellido o DNI"
-                value="{{ q|default:'' }}"
-            >
+            <input type="text" name="q" placeholder="Buscar por nombre, apellido o DNI" value="{{ q|default:'' }}">
+            
+            <input type="text"name="barrio" placeholder="Filtrar por barrio" value="{{ barrio|default:'' }}">
 
-            <input
-                type="text"
-                name="barrio"
-                placeholder="Filtrar por barrio"
-                value="{{ barrio|default:'' }}"
-            >
-
-            <select name="orden">
-
-                <option value="">Ordenar</option>
-
-                <option value="az"
-                    {% if orden == "az" %}selected{% endif %}>
-                    Apellido A-Z
-                </option>
-
-                <option value="za"
-                    {% if orden == "za" %}selected{% endif %}>
-                    Apellido Z-A
-                </option>
-
-                <option value="dni_asc"
-                    {% if orden == "dni_asc" %}selected{% endif %}>
-                    DNI menor a mayor
-                </option>
-
-                <option value="dni_desc"
-                    {% if orden == "dni_desc" %}selected{% endif %}>
-                    DNI mayor a menor
-                </option>
-
+            <select name="encuesta">
+                <option value="">Todas las encuestas</option>
+                <option value="pendiente"{% if encuesta == "pendiente" %}selected{% endif %}>Pendientes</option>
+                <option value="realizada"{% if encuesta == "realizada" %}selected{% endif %}>Realizadas</option>
             </select>
 
-            <button style="padding: 7.5px 16px;" type="submit">
-                Aplicar
-            </button>
+            <select name="orden">
+                <option value="">Ordenar</option>
+                <option value="az" {% if orden == "az" %}selected{% endif %}>Apellido A-Z</option>
+                <option value="za" {% if orden == "za" %}selected{% endif %}>Apellido Z-A</option>
+                <option value="dni_asc" {% if orden == "dni_asc" %}selected{% endif %}>DNI menor a mayor</option>
+                <option value="dni_desc" {% if orden == "dni_desc" %}selected{% endif %}>DNI mayor a menor</option>
+            </select>
 
-            <a class="btn"
-            style="padding: 7.5px 16px;"
-            href="{% url 'personas:lista_personas' %}">
-            Limpiar
-            </a>
+            <button style="padding: 7.5px 16px;" type="submit">Aplicar</button>
 
-            <a class="btn"
-            style="padding: 7.5px 16px;"
-            href="{% url 'personas:crear_persona' %}">
-            + Nueva persona
-            </a>
+            <a class="btn" style="padding: 7.5px 16px;" href="{% url 'personas:lista_personas' %}">Limpiar</a>
+            <a class="btn" style="padding: 7.5px 16px;" href="{% url 'personas:crear_persona' %}">+ Nueva persona</a>
 
         </form>
 
@@ -84,6 +51,7 @@
                         <th>Apellido</th>
                         <th>Nombre</th>
                         <th>Barrio</th>
+                        <th>Encuesta social pendiente</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -101,6 +69,8 @@
                             <td>{{ persona.nombre }}</td>
 
                             <td>{{ persona.barrio }}</td>
+
+                            <td>{% if persona.encuesta_social_pendiente %}<span class="estado-pendiente">⏳ Pendiente</span>{% else %}<span class="estado-realizada">✔ Realizada</span>{% endif %}</td>
 
                             <td>
 
@@ -139,13 +109,13 @@
 
                 <a class="btn"
                 style="margin: 5px;"
-                href="?page=1{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                href="?page=1{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}{% if encuesta %}&encuesta={{ encuesta }}{% endif %}">
                     Primera
                 </a>
 
                 <a class="btn"
                 style="margin: 5px;"
-                href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}{% if encuesta %}&encuesta={{ encuesta }}{% endif %}">
                     Anterior
                 </a>
 
@@ -159,13 +129,13 @@
 
                 <a class="btn"
                 style="margin: 5px;"
-                href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                href="?page=1{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}{% if encuesta %}&encuesta={{ encuesta }}{% endif %}">
                     Siguiente
                 </a>
 
                 <a class="btn"
                 style="margin: 5px;"
-                href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}">
+                href="?page={{ page_obj.paginator.num_pages }}{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}{% if encuesta %}&encuesta={{ encuesta }}{% endif %}">
                     Última
                 </a>
 

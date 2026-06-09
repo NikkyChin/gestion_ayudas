@@ -15,6 +15,7 @@ def lista_personas(request):
     q = request.GET.get("q")
     orden = request.GET.get("orden")
     barrio = request.GET.get("barrio")
+    encuesta = request.GET.get("encuesta")
 
     personas = Persona.objects.all()
 
@@ -30,6 +31,17 @@ def lista_personas(request):
     if barrio:
         personas = personas.filter(
             barrio__icontains=barrio
+        )
+
+    # FILTRO POR ENCUESTA SOCIAL PENDIENTE
+    if encuesta == "pendiente":
+        personas = personas.filter(
+            encuesta_social_pendiente=True
+        )
+
+    elif encuesta == "realizada":
+        personas = personas.filter(
+            encuesta_social_pendiente=False
         )
 
     # ORDENAMIENTO

@@ -167,3 +167,13 @@ form button {
     align-items: center;
     justify-content: center;
 }
+
+.estado-pendiente {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.estado-realizada {
+    color: #198754;
+    font-weight: bold;
+}

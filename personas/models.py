@@ -9,8 +9,10 @@ class Persona(models.Model):
     barrio = models.CharField(max_length=100, blank=True)
     telefono = models.CharField(max_length=30, blank=True)
     observaciones = models.TextField(blank=True)
-    activa = models.BooleanField(default=True)
 
+    encuesta_social_pendiente = models.BooleanField(default=False)
+
+    activa = models.BooleanField(default=True)
     class Meta:
         ordering = ["apellido", "nombre"]
         verbose_name = "Persona"

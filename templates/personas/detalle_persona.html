@@ -10,6 +10,7 @@
     <p><strong>Barrio:</strong> {{ persona.barrio }}</p>
     <p><strong>Teléfono:</strong> {{ persona.telefono }}</p>
     <p><strong>Estado:</strong> {% if persona.activa %}Activa{% else %}Inactiva{% endif %}</p>
+    <p><strong>Encuesta social pendiente:</strong> {% if persona.encuesta_social_pendiente %}<span class="estado-pendiente">⏳ Pendiente</span>{% else %}<span class="estado-realizada">✔ Realizada</span>{% endif %}</p>
     <p><strong>Observaciones:</strong> {{ persona.observaciones }}</p>
 
     <hr>
