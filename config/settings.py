@@ -111,6 +111,8 @@ DATABASES = {
 # PASSWORD VALIDATION
 # =========================================================
 
+PASSWORD_CHANGE_REDIRECT_URL = "password_change_done"
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",

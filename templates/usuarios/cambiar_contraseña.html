@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Cambiar contraseña
+{% endblock %}
+
+{% block content %}
+
+<h1>
+    Cambiar contraseña
+</h1>
+
+<div class="tarjeta">
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {% if form.errors %}
+            <div style="background:#ffdddd;
+                        padding:10px;
+                        border-radius:5px;
+                        margin-bottom:15px;">
+
+                {{ form.errors }}
+
+            </div>
+        {% endif %}
+
+        <p>
+            <label for="{{ form.old_password.id_for_label }}">
+                Contraseña actual
+            </label>
+            {{ form.old_password }}
+        </p>
+
+        <p>
+            <label for="{{ form.new_password1.id_for_label }}">
+                Nueva contraseña
+            </label>
+            {{ form.new_password1 }}
+        </p>
+
+        <p>
+            <label for="{{ form.new_password2.id_for_label }}">
+                Confirmar nueva contraseña
+            </label>
+            {{ form.new_password2 }}
+        </p>
+
+        <a class="btn" href="/">
+            Cancelar
+        </a>
+
+        <button type="submit">
+            Cambiar contraseña
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
