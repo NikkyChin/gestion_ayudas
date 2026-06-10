@@ -71,6 +71,7 @@ def lista_personas(request):
         "q": q,
         "orden": orden,
         "barrio": barrio,
+        "encuesta": encuesta,
     })
 
 @login_required
@@ -168,3 +169,77 @@ def imprimir_persona(request, persona_id):
         "persona": persona,
         "secretaria": secretaria,
     })
+
+@login_required
+def imprimir_lista(request):
+
+    q = request.GET.get("q")
+    orden = request.GET.get("orden")
+    barrio = request.GET.get("barrio")
+    encuesta = request.GET.get("encuesta")
+
+    personas = Persona.objects.all()
+
+    grupo = request.user.groups.first()
+
+    secretaria = None
+
+    if grupo:
+        secretaria = Secretaria.objects.filter(
+            nombre=grupo.name,
+            activa=True
+        ).first()
+
+    # BUSCADOR
+    if q:
+        personas = personas.filter(
+            Q(nombre__icontains=q) |
+            Q(apellido__icontains=q) |
+            Q(dni__icontains=q)
+        )
+
+    # FILTRO BARRIO
+    if barrio:
+        personas = personas.filter(
+            barrio__icontains=barrio
+        )
+
+    # FILTRO ENCUESTA
+    if encuesta == "pendiente":
+        personas = personas.filter(
+            encuesta_social_pendiente=True
+        )
+
+    elif encuesta == "realizada":
+        personas = personas.filter(
+            encuesta_social_pendiente=False
+        )
+
+    # ORDENAMIENTO
+    if orden == "az":
+        personas = personas.order_by("apellido")
+
+    elif orden == "za":
+        personas = personas.order_by("-apellido")
+
+    elif orden == "dni_asc":
+        personas = personas.order_by("dni")
+
+    elif orden == "dni_desc":
+        personas = personas.order_by("-dni")
+
+    else:
+        personas = personas.order_by("apellido")
+
+    return render(
+        request,
+        "personas/imprimir_lista.html",
+        {
+            "personas": personas,
+            "q": q,
+            "barrio": barrio,
+            "orden": orden,
+            "encuesta": encuesta,
+            "secretaria": secretaria,
+        }
+    )

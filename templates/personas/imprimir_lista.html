@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <title>
+            Listado de Personas
+        </title>
+
+        <style>
+
+            body {
+                font-family: Arial, sans-serif;
+                margin: 30px;
+                color: #222;
+            }
+
+            .encabezado {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                border-bottom: 2px solid #000;
+                padding-bottom: 15px;
+                margin-bottom: 25px;
+            }
+
+            .logo {
+                width: 90px;
+                height: auto;
+            }
+
+            h1, h2 {
+                margin: 0;
+            }
+
+            .filtros {
+                margin-bottom: 25px;
+                padding: 10px;
+                border: 1px solid #ccc;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            table th,
+            table td {
+                border: 1px solid #000;
+                padding: 8px;
+                text-align: left;
+            }
+
+            table th {
+                background: #f2f2f2;
+            }
+
+            .footer {
+                margin-top: 40px;
+                text-align: center;
+                font-size: 12px;
+                color: #666;
+            }
+
+            @media print {
+
+                body {
+                    margin: 15px;
+                }
+
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <div class="container">
+
+            <div class="encabezado">
+
+                <div class="logo-container">
+                    <img src="/static/img/logo_muni.png" alt="Logo Municipalidad" class="logo">
+                </div>
+
+
+                <div class="encabezado-texto">
+
+                    <h1>
+                        Municipalidad de Rawson
+                    </h1>
+
+                    <h2>
+                        Secretaría:
+                        {{ secretaria.nombre }}
+                    </h2>
+
+                    <h2>
+                        Listado de Personas
+                    </h2>
+
+                    <p>
+                        Fecha de impresión:
+                        {% now "d/m/Y H:i" %}
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="filtros">
+
+                <strong>Filtros aplicados:</strong>
+
+                <ul>
+
+                    <li>
+                        Búsqueda:
+                        {{ q|default:"Todos" }}
+                    </li>
+
+                    <li>
+                        Barrio:
+                        {{ barrio|default:"Todos" }}
+                    </li>
+
+                    <li>
+                        Encuesta social:
+                        {% if encuesta == "pendiente" %}
+                            Pendiente
+                        {% elif encuesta == "realizada" %}
+                            Realizada
+                        {% else %}
+                            Todas
+                        {% endif %}
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>DNI</th>
+                        <th>Apellido</th>
+                        <th>Nombre</th>
+                        <th>Barrio</th>
+                        <th>Teléfono</th>
+                        <th>Encuesta</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for persona in personas %}
+
+                        <tr>
+
+                            <td>{{ persona.dni }}</td>
+
+                            <td>{{ persona.apellido }}</td>
+
+                            <td>{{ persona.nombre }}</td>
+
+                            <td>{{ persona.barrio }}</td>
+
+                            <td>{{ persona.telefono }}</td>
+
+                            <td>
+                                {% if encuesta == "pendiente" %}
+                                    Pendiente
+                                {% elif encuesta == "realizada" %}
+                                    Realizada
+                                {% else %}
+                                    {{ persona.encuesta_social_pendiente|yesno:"Pendiente,Realizada" }}
+                                {% endif %}
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="6">
+                                No hay personas para mostrar.
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <p style="margin-top:20px;">
+
+                <strong>
+                    Total de personas:
+                    {{ personas|length }}
+                </strong>
+
+            </p>
+            
+            <hr>
+
+            <button type="button" onclick="window.print()">Imprimir</button>
+
+            <div class="footer">
+
+                Municipalidad de Rawson -
+                Sistema de Gestión de Ayudas Sociales
+
+            </div>
+        </div>
+
+    </body>
+
+</html>
