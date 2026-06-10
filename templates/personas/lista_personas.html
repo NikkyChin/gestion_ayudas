@@ -33,7 +33,7 @@
 
             <a class="btn" style="padding: 7.5px 16px;" href="{% url 'personas:lista_personas' %}">Limpiar</a>
             <a class="btn" style="padding: 7.5px 16px;" href="{% url 'personas:crear_persona' %}">+ Nueva persona</a>
-
+            <a class="btn" style="padding: 7.5px 16px;" href="{% url 'personas:imprimir_lista' %}?q={{ q|default:'' }}&barrio={{ barrio|default:'' }}&orden={{ orden|default:'' }}&encuesta={{ encuesta|default:'' }}" target="_blank">Imprimir listado</a>
         </form>
 
     </div>
@@ -51,7 +51,7 @@
                         <th>Apellido</th>
                         <th>Nombre</th>
                         <th>Barrio</th>
-                        <th>Encuesta social pendiente</th>
+                        <th>Encuesta social</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>

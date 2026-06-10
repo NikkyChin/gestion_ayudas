@@ -3,3 +3,10 @@
 #RwtXq887454LLp
 #familia 
 #postgres_familia
+
+
+
+QUE HACER:
+ realizar grupos dentro de cada secretaria para ser asignados a los usuarios
+ realizar mejora en auditoria para un control mas limpio
+ 
