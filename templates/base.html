@@ -20,7 +20,9 @@
                 <a href="{% url 'personas:lista_personas' %}">Personas</a>
                 <a href="{% url 'secretarias:mis_ayudas' %}">Mis ayudas</a>
                 <a href="{% url 'solicitudes:entregar_ayuda' %}">Entregar ayuda</a>
-                <a href="{% url 'solicitudes:estadisticas_entregas' %}">Estadísticas</a>
+                {% if request.user.perfil.es_admin_general or request.user.perfil.es_admin_area %}
+                    <a href="{% url 'solicitudes:estadisticas_entregas' %}">Estadísticas</a>
+                {% endif %}
             {% endif %}
 
             <div style="margin-left:auto; display:flex; align-items:center; gap:15px;">

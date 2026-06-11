@@ -74,18 +74,45 @@ def lista_personas(request):
         "encuesta": encuesta,
     })
 
+from django.core.paginator import Paginator
+
 @login_required
 def detalle_persona(request, persona_id):
-    persona = get_object_or_404(Persona, id=persona_id)
-    return render(request, "personas/detalle_persona.html", { "persona": persona })
 
+    persona = get_object_or_404(
+        Persona,
+        id=persona_id
+    )
+
+    entregas = persona.entregas.all().order_by("-fecha")
+
+    paginator = Paginator(
+        entregas,
+        10  # ayudas por página
+    )
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request,
+        "personas/detalle_persona.html",
+        {
+            "persona": persona,
+            "page_obj": page_obj,
+        }
+    )
 @login_required
 def crear_persona(request):
     if request.method == "POST":
         form = PersonaForm(request.POST)
 
         if form.is_valid():
-            persona = form.save()
+
+            persona = form.save(commit=False)
+            persona.creado_por = request.user
+            persona.save()
+
             nombres = request.POST.getlist("conviviente_nombre")
             apellidos = request.POST.getlist("conviviente_apellido")
             dnis = request.POST.getlist("conviviente_dni")
@@ -118,7 +145,10 @@ def editar_persona(request, persona_id):
         form = PersonaForm(request.POST, instance=persona)
 
         if form.is_valid():
-            persona = form.save()
+
+            persona = form.save(commit=False)
+            persona.modificado_por = request.user
+            persona.save()
 
             # borrar convivientes anteriores
             persona.convivientes.all().delete()

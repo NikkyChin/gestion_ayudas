@@ -1,21 +1,29 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from secretarias.models import Secretaria, Ayuda
+from secretarias.models import Ayuda
 
 
 @login_required
 def inicio(request):
-    grupo = request.user.groups.first()
+
     secretaria = None
+    oficina = None
     ayudas = []
 
-    if grupo:
-        secretaria = Secretaria.objects.filter(nombre=grupo.name, activa=True).first()
+    if hasattr(request.user, "perfil"):
+
+        secretaria = request.user.perfil.secretaria
+        oficina = request.user.perfil.oficina
+
         if secretaria:
-            ayudas = Ayuda.objects.filter(secretaria=secretaria, activa=True)
+            ayudas = Ayuda.objects.filter(
+                secretaria=secretaria,
+                activa=True
+            )
 
     return render(request, "usuarios/inicio.html", {
         "secretaria": secretaria,
+        "oficina": oficina,
         "ayudas": ayudas,
     })
 

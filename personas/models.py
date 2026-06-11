@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Persona(models.Model):
+
     dni = models.CharField(max_length=20, unique=True)
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
@@ -12,14 +14,31 @@ class Persona(models.Model):
 
     encuesta_social_pendiente = models.BooleanField(default=False)
 
-    activa = models.BooleanField(default=True)
-    class Meta:
-        ordering = ["apellido", "nombre"]
-        verbose_name = "Persona"
-        verbose_name_plural = "Personas"
+    creado_por = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="personas_creadas"
+    )
 
-    def __str__(self):
-        return f"{self.apellido}, {self.nombre} - DNI {self.dni}"
+    fecha_creacion = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    modificado_por = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="personas_modificadas"
+    )
+
+    fecha_modificacion = models.DateTimeField(
+        auto_now=True
+    )
+
+    activa = models.BooleanField(default=True)
 
 
 class Conviviente(models.Model):

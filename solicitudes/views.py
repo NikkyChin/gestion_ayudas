@@ -105,6 +105,9 @@ def entregar_ayuda(request):
 
 @login_required
 def estadisticas_entregas(request):
+    
+    if not (request.user.perfil.es_admin_general or request.user.perfil.es_admin_area):
+        return redirect("usuarios:sin_permiso")
 
     grupo = request.user.groups.first()
 
@@ -187,6 +190,9 @@ def estadisticas_entregas(request):
 
 @login_required
 def imprimir_estadisticas(request):
+
+    if not (request.user.perfil.es_admin_general or request.user.perfil.es_admin_area):
+        return redirect("usuarios:sin_permiso")
 
     grupo = request.user.groups.first()
 
