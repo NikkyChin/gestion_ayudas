@@ -10,6 +10,7 @@
 
     {% if secretaria %}
         <p><strong>Secretaría:</strong> {{ secretaria.nombre }}</p>
+        <p><strong>Área:</strong> {{ oficina.nombre }}</p>
     {% else %}
         <p style="color: red;">No tienes una secretaría asignada</p>
     {% endif %}
@@ -23,7 +24,9 @@
         <a class="btn" href="{% url 'personas:lista_personas' %}">Ver personas</a>
         <a class="btn" href="{% url 'personas:crear_persona' %}">Registrar persona</a>
         <a class="btn" href="{% url 'solicitudes:entregar_ayuda' %}">Entregar ayuda</a>
-        <a class="btn" href="{% url 'solicitudes:estadisticas_entregas' %}">Ver estadísticas</a>
+        {% if request.user.perfil.es_admin_general or request.user.perfil.es_admin_area %}
+            <a class="btn" href="{% url 'solicitudes:estadisticas_entregas' %}">Ver estadísticas</a>
+        {% endif %}
     </div>
 </div>
 
