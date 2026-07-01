@@ -11,6 +11,7 @@ class Persona(models.Model):
     barrio = models.CharField(max_length=100, blank=True)
     telefono = models.CharField(max_length=30, blank=True)
     observaciones = models.TextField(blank=True)
+    email = models.EmailField("Correo electrónico", blank=True, null=True)
 
     encuesta_social_pendiente = models.BooleanField(default=False)
 

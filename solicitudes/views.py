@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from personas.models import Persona, Conviviente
@@ -172,6 +174,14 @@ def estadisticas_entregas(request):
                 "-total"
             )
         )
+        
+        ayudas_por_barrio = defaultdict(list)
+
+        for item in estadisticas_barrio_ayuda:
+            ayudas_por_barrio[item["persona__barrio"]].append({
+                "ayuda": item["ayuda__nombre"],
+                "total": item["total"],
+            })
 
     total_general = sum(
         item["total"]
@@ -186,6 +196,7 @@ def estadisticas_entregas(request):
         "anio": anio,
         "secretaria": secretaria,
         "total_general": total_general,
+        "ayudas_por_barrio": dict(ayudas_por_barrio),
     })
 
 @login_required
@@ -258,6 +269,14 @@ def imprimir_estadisticas(request):
                 "-total"
             )
         )
+        
+        ayudas_por_barrio = defaultdict(list)
+
+        for item in estadisticas_barrio_ayuda:
+            ayudas_por_barrio[item["persona__barrio"]].append({
+                "ayuda": item["ayuda__nombre"],
+                "total": item["total"],
+            })
 
     total_general = sum(item["total"] for item in estadisticas)
 
@@ -286,4 +305,5 @@ def imprimir_estadisticas(request):
         "total_general": total_general,
         "estadisticas_barrios": estadisticas_barrios,
         "estadisticas_barrio_ayuda": estadisticas_barrio_ayuda,
+        "ayudas_por_barrio": dict(ayudas_por_barrio),
     })

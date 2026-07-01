@@ -60,3 +60,55 @@ class Oficina(models.Model):
 
     def __str__(self):
         return f"{self.nombre} - {self.secretaria.nombre}"
+
+class ConfiguracionCorreo(models.Model):
+    secretaria = models.OneToOneField(
+        Secretaria,
+        on_delete=models.CASCADE,
+        related_name="configuracion_correo"
+    )
+
+    nombre_remitente = models.CharField(
+        max_length=150,
+        help_text="Nombre que verá el destinatario."
+    )
+
+    email = models.EmailField(
+        unique=True
+    )
+
+    password = models.CharField(
+        max_length=255
+    )
+
+    smtp_host = models.CharField(
+        max_length=100,
+        default="smtp.gmail.com"
+    )
+
+    smtp_port = models.PositiveIntegerField(
+        default=587
+    )
+
+    usar_tls = models.BooleanField(
+        default=True
+    )
+
+    activo = models.BooleanField(
+        default=True
+    )
+
+    creado = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    actualizado = models.DateTimeField(
+        auto_now=True
+    )
+
+    class Meta:
+        verbose_name = "Configuración de correo"
+        verbose_name_plural = "Configuraciones de correo"
+
+    def __str__(self):
+        return f"{self.secretaria.nombre} ({self.email})"

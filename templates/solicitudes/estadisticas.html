@@ -174,57 +174,41 @@
 
                 <hr>
 
-                <h4>
-                    Ayudas entregadas por barrio
-                </h4>
+               <h4>Ayudas entregadas por barrio</h4>
 
-                <table class="table table-striped" style="width: 100%; border-collapse: collapse; text-align: left;">
+                {% for barrio, ayudas in ayudas_por_barrio.items %}
 
-                    <thead>
+                    <h5>{{ barrio }}</h5>
 
-                        <tr>
-                            <th class="text-start">Barrio</th>
-                            <th class="text-start">Ayuda</th>
-                            <th class="text-end" style="text-align: right;">Cantidad</th>
-                        </tr>
+                    <table class="table table-striped" style="width: 100%; border-collapse: collapse; text-align: left;">
 
-                    </thead>
-
-                    <tbody>
-
-                        {% for item in estadisticas_barrio_ayuda %}
-
+                        <thead>
                             <tr>
-
-                                <td class="text-start">
-                                    {{ item.persona__barrio }}
-                                </td>
-
-                                <td class="text-start">
-                                    {{ item.ayuda__nombre }}
-                                </td>
-
-                                <td class="text-end" style="text-align: right;">
-                                    {{ item.total }}
-                                </td>
-
+                                <th class="text-start">Ayuda</th>
+                                <th class="text-end" style="text-align: right;">Cantidad</th>
                             </tr>
+                        </thead>
 
-                        {% empty %}
+                        <tbody>
 
-                            <tr>
+                            {% for ayuda in ayudas %}
 
-                                <td colspan="3">
-                                    No hay datos.
-                                </td>
+                                <tr>
+                                    <td class="text-start">{{ ayuda.ayuda }}</td>
+                                    <td class="text-end" style="text-align: right;">{{ ayuda.total }}</td>
+                                </tr>
 
-                            </tr>
+                            {% endfor %}
 
-                        {% endfor %}
+                        </tbody>
 
-                    </tbody>
+                    </table>
 
-                </table>
+                {% empty %}
+
+                    <p>No hay datos.</p>
+
+                {% endfor %}
 
             </div>
 

@@ -16,6 +16,7 @@ class PersonaForm(forms.ModelForm):
             "barrio",
             "telefono",
             "observaciones",
+            "email",
             "encuesta_social_pendiente",
             "activa",
         ]
@@ -66,6 +67,11 @@ class PersonaForm(forms.ModelForm):
                 "rows": 4,
                 "maxlength": "500",
                 "placeholder": "Observaciones adicionales",
+            }),
+
+            "email": forms.EmailInput(attrs={
+                "class": "form-control",
+                "placeholder": "Ingrese correo electrónico",
             }),
         }
 
@@ -136,6 +142,19 @@ class PersonaForm(forms.ModelForm):
 
         return telefono
 
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+
+        if email:
+            email = email.strip()
+
+            if not re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email):
+                raise ValidationError(
+                    "El correo electrónico ingresado no es válido."
+                )
+
+        return email
+    
     def clean(self):
         cleaned_data = super().clean()
 

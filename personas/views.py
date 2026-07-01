@@ -102,6 +102,7 @@ def detalle_persona(request, persona_id):
             "page_obj": page_obj,
         }
     )
+
 @login_required
 def crear_persona(request):
     if request.method == "POST":

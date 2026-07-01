@@ -158,6 +158,7 @@
                         <th>Nombre</th>
                         <th>Barrio</th>
                         <th>Teléfono</th>
+                        <th>Correo electrónico</th>
                         <th>Encuesta</th>
 
                     </tr>
@@ -180,6 +181,8 @@
 
                             <td>{{ persona.telefono }}</td>
 
+                            <td>{{ persona.email }}</td>
+
                             <td>
                                 {% if encuesta == "pendiente" %}
                                     Pendiente
@@ -196,7 +199,7 @@
 
                         <tr>
 
-                            <td colspan="6">
+                            <td colspan="8">
                                 No hay personas para mostrar.
                             </td>
 

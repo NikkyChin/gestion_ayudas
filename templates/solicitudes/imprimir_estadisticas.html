@@ -173,9 +173,7 @@
 
         </table>
 
-        <h2 style="margin-top:40px;">
-            Asistencia por barrio
-        </h2>
+        <h2 style="margin-top:40px;">Asistencia por barrio</h2>
 
         <table>
 
@@ -216,51 +214,40 @@
 
         </table>
 
-        <h2 style="margin-top:40px;">
-            Ayudas entregadas por barrio
-        </h2>
+        <h4>Ayudas entregadas por barrio</h4>
 
-        <table>
+            {% for barrio, ayudas in ayudas_por_barrio.items %}
 
-            <thead>
+                <h5>{{ barrio }}</h5>
 
-                <tr>
-                    <th>Barrio</th>
-                    <th>Ayuda</th>
-                    <th>Cantidad</th>
-                </tr>
+                <table class="table table-striped" style="width: 100%; border-collapse: collapse; text-align: left;">
 
-            </thead>
+                    <thead>
+                        <tr>
+                            <th class="text-start">Ayuda</th>
+                            <th class="text-end" style="text-align: right;">Cantidad</th>
+                        </tr>
+                    </thead>
 
-            <tbody>
+                    <tbody>
 
-                {% for item in estadisticas_barrio_ayuda %}
+                        {% for ayuda in ayudas %}
 
-                    <tr>
+                            <tr>
+                                <td class="text-start">{{ ayuda.ayuda }}</td>
+                                <td class="text-end" style="text-align: right;">{{ ayuda.total }}</td>
+                            </tr>
 
-                        <td>{{ item.persona__barrio }}</td>
+                        {% endfor %}
 
-                        <td>{{ item.ayuda__nombre }}</td>
+                    </tbody>
 
-                        <td>{{ item.total }}</td>
+                </table>
 
-                    </tr>
+            {% empty %}
+                <p>No hay datos.</p>
+            {% endfor %}
 
-                {% empty %}
-
-                    <tr>
-
-                        <td colspan="3">
-                            No hay datos registrados.
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
 
         <div class="total">
 
