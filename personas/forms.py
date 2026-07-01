@@ -1,11 +1,19 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import Persona
+from .constants import BARRIOS_CHOICES
 import re
 
 
 class PersonaForm(forms.ModelForm):
 
+    barrio = forms.ChoiceField(
+        choices=[("", "---------")] + BARRIOS_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={
+            "class": "form-select"
+        })
+    )
     class Meta:
         model = Persona
         fields = [
@@ -47,12 +55,6 @@ class PersonaForm(forms.ModelForm):
                 "class": "form-control",
                 "placeholder": "Ingrese dirección",
                 "maxlength": "100",
-            }),
-
-            "barrio": forms.TextInput(attrs={
-                "class": "form-control",
-                "placeholder": "Ingrese barrio",
-                "maxlength": "50",
             }),
 
             "telefono": forms.TextInput(attrs={

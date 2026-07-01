@@ -232,9 +232,8 @@ def imprimir_lista(request):
     # FILTRO BARRIO
     if barrio:
         personas = personas.filter(
-            barrio__icontains=barrio
+            barrio=barrio
         )
-
     # FILTRO ENCUESTA
     if encuesta == "pendiente":
         personas = personas.filter(
