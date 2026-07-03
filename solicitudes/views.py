@@ -1,4 +1,5 @@
 from collections import defaultdict
+from urllib import request
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -111,9 +112,21 @@ def estadisticas_entregas(request):
     if not (request.user.perfil.es_admin_general or request.user.perfil.es_admin_area):
         return redirect("usuarios:sin_permiso")
 
+    
     grupo = request.user.groups.first()
+    secretaria_id = request.GET.get("secretaria")
+
+    secretarias = Secretaria.objects.filter(
+        activa=True
+    ).order_by("nombre")
 
     secretaria = None
+
+    if not request.user.perfil.es_admin_general and grupo:
+        secretaria = Secretaria.objects.filter(
+            nombre=grupo.name,
+            activa=True
+        ).first()
 
     estadisticas = []
     estadisticas_barrios = []
@@ -122,66 +135,83 @@ def estadisticas_entregas(request):
     mes = request.GET.get("mes", "todos")
     anio = request.GET.get("anio", str(datetime.now().year))
 
-    if grupo:
-        secretaria = Secretaria.objects.filter(
-            nombre=grupo.name,
-            activa=True
-        ).first()
+    # ==========================
+    # CONSULTA DE ENTREGAS
+    # ==========================
 
-    entregas = EntregaAyuda.objects.none()
+    if request.user.perfil.es_admin_general:
 
-    if secretaria:
+        entregas = EntregaAyuda.objects.all()
+
+        if secretaria_id:
+            entregas = entregas.filter(
+                ayuda__secretaria_id=secretaria_id
+            )
+
+    elif secretaria:
 
         entregas = EntregaAyuda.objects.filter(
             ayuda__secretaria=secretaria
         )
 
-        if mes != "todos":
-            entregas = entregas.filter(
-                fecha__month=mes
-            )
+    else:
 
-        if anio:
-            entregas = entregas.filter(
-                fecha__year=anio
-            )
+        entregas = EntregaAyuda.objects.none()
 
-        estadisticas = (
-            entregas
-            .values("ayuda__nombre")
-            .annotate(total=Count("id"))
-            .order_by("-total")
+    # ==========================
+    # FILTROS
+    # ==========================
+
+    if mes != "todos":
+        entregas = entregas.filter(
+            fecha__month=mes
         )
 
-        estadisticas_barrios = (
-            entregas
-            .exclude(persona__barrio="")
-            .values("persona__barrio")
-            .annotate(total=Count("id"))
-            .order_by("-total")
+    if anio:
+        entregas = entregas.filter(
+            fecha__year=anio
         )
 
-        estadisticas_barrio_ayuda = (
-            entregas
-            .exclude(persona__barrio="")
-            .values(
-                "persona__barrio",
-                "ayuda__nombre"
-            )
-            .annotate(total=Count("id"))
-            .order_by(
-                "persona__barrio",
-                "-total"
-            )
-        )
-        
-        ayudas_por_barrio = defaultdict(list)
+    # ==========================
+    # ESTADÍSTICAS
+    # ==========================
 
-        for item in estadisticas_barrio_ayuda:
-            ayudas_por_barrio[item["persona__barrio"]].append({
-                "ayuda": item["ayuda__nombre"],
-                "total": item["total"],
-            })
+    estadisticas = (
+        entregas
+        .values("ayuda__nombre")
+        .annotate(total=Count("id"))
+        .order_by("-total")
+    )
+
+    estadisticas_barrios = (
+        entregas
+        .exclude(persona__barrio="")
+        .values("persona__barrio")
+        .annotate(total=Count("id"))
+        .order_by("-total")
+    )
+
+    estadisticas_barrio_ayuda = (
+        entregas
+        .exclude(persona__barrio="")
+        .values(
+            "persona__barrio",
+            "ayuda__nombre"
+        )
+        .annotate(total=Count("id"))
+        .order_by(
+            "persona__barrio",
+            "-total"
+        )
+    )
+
+    ayudas_por_barrio = defaultdict(list)
+
+    for item in estadisticas_barrio_ayuda:
+        ayudas_por_barrio[item["persona__barrio"]].append({
+            "ayuda": item["ayuda__nombre"],
+            "total": item["total"],
+        })
 
     total_general = sum(
         item["total"]
@@ -197,6 +227,8 @@ def estadisticas_entregas(request):
         "secretaria": secretaria,
         "total_general": total_general,
         "ayudas_por_barrio": dict(ayudas_por_barrio),
+        "secretarias": secretarias,
+        "secretaria_id": secretaria_id,
     })
 
 @login_required
@@ -207,7 +239,16 @@ def imprimir_estadisticas(request):
 
     grupo = request.user.groups.first()
 
+    secretaria_id = request.GET.get("secretaria")
+
     secretaria = None
+
+    if not request.user.perfil.es_admin_general and grupo:
+        secretaria = Secretaria.objects.filter(
+            nombre=grupo.name,
+            activa=True
+        ).first()
+
     estadisticas = []
     estadisticas_barrios = []
     estadisticas_barrio_ayuda = []
@@ -215,68 +256,83 @@ def imprimir_estadisticas(request):
     mes = request.GET.get("mes", "todos")
     anio = request.GET.get("anio", str(datetime.now().year))
 
-    if grupo:
-        secretaria = Secretaria.objects.filter(
-            nombre=grupo.name,
-            activa=True
-        ).first()
+    # ==========================
+    # CONSULTA DE ENTREGAS
+    # ==========================
 
-    entregas = EntregaAyuda.objects.none()
+    if request.user.perfil.es_admin_general:
 
-    if secretaria:
+        entregas = EntregaAyuda.objects.all()
+
+        if secretaria_id:
+            entregas = entregas.filter(
+                ayuda__secretaria_id=secretaria_id
+            )
+
+    elif secretaria:
 
         entregas = EntregaAyuda.objects.filter(
             ayuda__secretaria=secretaria
         )
 
-        # FILTRO MES
-        if mes != "todos":
-            entregas = entregas.filter(
-                fecha__month=mes
-            )
+    else:
 
-        # FILTRO AÑO
-        if anio:
-            entregas = entregas.filter(
-                fecha__year=anio
-            )
+        entregas = EntregaAyuda.objects.none()
 
-        estadisticas = (
-            entregas
-            .values("ayuda__nombre")
-            .annotate(total=Count("id"))
-            .order_by("-total")
+    # ==========================
+    # FILTROS
+    # ==========================
+
+    if mes != "todos":
+        entregas = entregas.filter(
+            fecha__month=mes
         )
 
-        estadisticas_barrios = (
-            entregas
-            .exclude(persona__barrio="")
-            .values("persona__barrio")
-            .annotate(total=Count("id"))
-            .order_by("-total")
+    if anio:
+        entregas = entregas.filter(
+            fecha__year=anio
         )
 
-        estadisticas_barrio_ayuda = (
-            entregas
-            .exclude(persona__barrio="")
-            .values(
-                "persona__barrio",
-                "ayuda__nombre"
-            )
-            .annotate(total=Count("id"))
-            .order_by(
-                "persona__barrio",
-                "-total"
-            )
-        )
-        
-        ayudas_por_barrio = defaultdict(list)
+    # ==========================
+    # ESTADÍSTICAS
+    # ==========================
 
-        for item in estadisticas_barrio_ayuda:
-            ayudas_por_barrio[item["persona__barrio"]].append({
-                "ayuda": item["ayuda__nombre"],
-                "total": item["total"],
-            })
+    estadisticas = (
+        entregas
+        .values("ayuda__nombre")
+        .annotate(total=Count("id"))
+        .order_by("-total")
+    )
+
+    estadisticas_barrios = (
+        entregas
+        .exclude(persona__barrio="")
+        .values("persona__barrio")
+        .annotate(total=Count("id"))
+        .order_by("-total")
+    )
+
+    estadisticas_barrio_ayuda = (
+        entregas
+        .exclude(persona__barrio="")
+        .values(
+            "persona__barrio",
+            "ayuda__nombre"
+        )
+        .annotate(total=Count("id"))
+        .order_by(
+            "persona__barrio",
+            "-total"
+        )
+    )
+
+    ayudas_por_barrio = defaultdict(list)
+
+    for item in estadisticas_barrio_ayuda:
+        ayudas_por_barrio[item["persona__barrio"]].append({
+            "ayuda": item["ayuda__nombre"],
+            "total": item["total"],
+        })
 
     total_general = sum(item["total"] for item in estadisticas)
 
@@ -297,6 +353,23 @@ def imprimir_estadisticas(request):
 
     nombre_mes = meses.get(str(mes), "Todos")
 
+    nombre_secretaria = "Todas las Secretarías"
+
+    if request.user.perfil.es_admin_general:
+
+        if secretaria_id:
+            secretaria_filtrada = Secretaria.objects.filter(
+                id=secretaria_id,
+                activa=True
+            ).first()
+
+            if secretaria_filtrada:
+                nombre_secretaria = secretaria_filtrada.nombre
+
+    else:
+
+        nombre_secretaria = secretaria.nombre if secretaria else ""
+
     return render(request, "solicitudes/imprimir_estadisticas.html", {
         "estadisticas": estadisticas,
         "secretaria": secretaria,
@@ -306,4 +379,6 @@ def imprimir_estadisticas(request):
         "estadisticas_barrios": estadisticas_barrios,
         "estadisticas_barrio_ayuda": estadisticas_barrio_ayuda,
         "ayudas_por_barrio": dict(ayudas_por_barrio),
+        "secretaria_id": secretaria_id,
+        "nombre_secretaria": nombre_secretaria,
     })

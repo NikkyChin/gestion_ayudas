@@ -90,8 +90,15 @@
                     </h1>
 
                     <h2>
-                        Secretaría:
-                        {{ secretaria.nombre }}
+                        {% if request.user.perfil.es_admin_general %}
+                            {% if secretaria_id %}
+                                Secretaría: {{ nombre_secretaria }}
+                            {% else %}
+                                Informe de estadísticas - Todas las Secretarías
+                            {% endif %}
+                        {% else %}
+                            Secretaría: {{ nombre_secretaria }}
+                        {% endif %}
                     </h2>
 
                     <!-- <p>

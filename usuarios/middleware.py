@@ -1,3 +1,5 @@
+from urllib import request
+
 from django.shortcuts import redirect
 from secretarias.models import Secretaria
 
@@ -18,21 +20,29 @@ class SecretariaMiddleware:
         ]
 
         if request.user.is_authenticated:
-            grupo = request.user.groups.first()
-            secretaria = None
 
-            if grupo:
-                secretaria = Secretaria.objects.filter(
-                    nombre=grupo.name,
-                    activa=True
-                ).first()
+            perfil = getattr(request.user, "perfil", None)
 
-            if secretaria:
-                request.tiene_secretaria = True
+            permitido = perfil and perfil.es_admin_general
 
-            if not any(request.path.startswith(ruta) for ruta in rutas_permitidas):
-                if not secretaria:
-                    return redirect("usuarios:sin_permiso")
+            if not permitido:
+                grupo = request.user.groups.first()
 
+                if grupo:
+                    secretaria = Secretaria.objects.filter(
+                        nombre=grupo.name,
+                        activa=True
+                    ).first()
+
+                    permitido = secretaria is not None
+
+            request.tiene_secretaria = permitido
+
+            if (
+                not permitido
+                and not any(request.path.startswith(ruta) for ruta in rutas_permitidas)
+            ):
+                return redirect("usuarios:sin_permiso")
+            
         response = self.get_response(request)
         return response
