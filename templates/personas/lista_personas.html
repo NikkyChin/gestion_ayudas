@@ -129,7 +129,7 @@
 
                 <a class="btn"
                 style="margin: 5px;"
-                href="?page=1{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}{% if encuesta %}&encuesta={{ encuesta }}{% endif %}">
+                href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if barrio %}&barrio={{ barrio }}{% endif %}{% if orden %}&orden={{ orden }}{% endif %}{% if encuesta %}&encuesta={{ encuesta }}{% endif %}">
                     Siguiente
                 </a>
 
