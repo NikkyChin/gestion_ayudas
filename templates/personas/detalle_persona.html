@@ -33,53 +33,103 @@
 
     <h2>Historial de ayudas</h2>
 
-    <ul>
+    {% for entrega in page_obj %}
 
-        {% for entrega in page_obj %}
+        <div class="tarjeta">
 
-            <li>
+            <h3>
+                {{ entrega.fecha|date:"d/m/Y H:i" }}
+            </h3>
 
-                <strong>
-                    {{ entrega.fecha|date:"d/m/Y H:i" }}
-                </strong>
-
-                <br>
-
-                Ayuda:
+            <p>
+                <strong>Ayuda:</strong>
                 {{ entrega.ayuda.nombre }}
+            </p>
 
-                <br>
-
-                Secretaría:
+            <p>
+                <strong>Secretaría:</strong>
                 {{ entrega.ayuda.secretaria.nombre }}
+            </p>
 
-                <br>
+            <p>
+                <strong>Nº Recibo:</strong>
+                {{ entrega.numero_recibo|default:"Sin número" }}
+            </p>
 
-                Usuario:
+            <p>
+                <strong>Registrado por:</strong>
                 {{ entrega.usuario.username }}
+            </p>
 
-                {% if entrega.descripcion %}
+            {% if entrega.descripcion %}
+            <p>
+                <strong>Detalle:</strong><br>
+                {{ entrega.descripcion }}
+            </p>
+            {% endif %}
 
+            <p>
+                <strong>Estado del comprobante:</strong>
+
+                {% if entrega.email_enviado %}
+                    <span style="color:green;">✔ Enviado</span>
+                {% elif entrega.error_envio %}
+                    <span style="color:red;">
+                        ❌ Error al enviar
+                    </span>
                     <br>
+                    <small>{{ entrega.error_envio }}</small>
+                {% else %}
+                    <span style="color:#d35400;">
+                        ⏳ Pendiente
+                    </span>
+                {% endif %}
+                
+            </p>
 
-                    Observación:
-                    {{ entrega.descripcion }}
+            <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
 
+                {% if entrega.pdf_recibo %}
+                    <a
+                        class="btn"
+                        href="{{ entrega.pdf_recibo.url }}"
+                        target="_blank">
+
+                        Descargar comprobante
+
+                    </a>
                 {% endif %}
 
-            </li>
+                <form
+                    method="post"
+                    action="{% url 'solicitudes:reenviar_comprobante' entrega.id %}"
+                    style="display:inline;">
 
-            <hr>
+                    {% csrf_token %}
 
-        {% empty %}
+                    <button
+                        class="btn"
+                        type="submit">
 
-            <li>
-                No hay ayudas registradas.
-            </li>
+                        Reenviar comprobante
 
-        {% endfor %}
+                    </button>
 
-    </ul>
+                </form>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+    <div class="tarjeta">
+
+        <p>No hay ayudas registradas.</p>
+
+    </div>
+
+    {% endfor %}
 
     <div class="pagi"
         style="margin-top: 20px; display: flex; gap: 10px; align-items: center; justify-content: center;">

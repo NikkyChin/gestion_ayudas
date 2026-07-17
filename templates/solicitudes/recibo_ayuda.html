@@ -1,0 +1,210 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Comprobante de Entrega de Ayuda</title>
+
+        <style>
+
+            @page {
+                size: A4;
+                margin: 20mm;
+            }
+
+            body{
+                font-family: Arial, Helvetica, sans-serif;
+                font-size:12px;
+                color:#000;
+            }
+
+            .header{
+                text-align:center;
+                border-bottom:2px solid #000;
+                padding-bottom:15px;
+                margin-bottom:25px;
+            }
+
+            .logo{
+                width:90px;
+                margin-bottom:10px;
+            }
+
+            h1{
+                font-size:22px;
+                margin:5px 0;
+            }
+
+            h2{
+                font-size:18px;
+                margin:15px 0;
+            }
+
+            table{
+                width:100%;
+                border-collapse:collapse;
+                margin-top:15px;
+            }
+
+            td{
+                padding:8px;
+                border:1px solid #ccc;
+            }
+
+            .titulo{
+                width:35%;
+                font-weight:bold;
+                background:#f4f4f4;
+            }
+
+            .descripcion{
+                margin-top:30px;
+                border:1px solid #ccc;
+                padding:15px;
+                min-height:120px;
+            }
+
+            .footer{
+                margin-top:50px;
+                text-align:center;
+                font-size:11px;
+                color:#666;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <div class="header">
+
+            <img style="width: 90px; height: auto;" src="{{ logo }}">
+
+            <h1>Municipalidad de Rawson</h1>
+
+            <p>
+                Mariano Moreno Nº650<br>
+                Rawson - Chubut
+            </p>
+
+            <h2>{{ secretaria.nombre }}</h2>
+
+            <strong>COMPROBANTE DE ENTREGA DE AYUDA</strong>
+
+        </div>
+
+        <table>
+
+            <tr>
+
+                <td class="titulo">Fecha</td>
+
+                <td>
+                    {{ fecha|date:"d/m/Y H:i" }}
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="titulo">
+                    Número de recibo
+                </td>
+
+                <td>
+
+                    {% if entrega.numero_recibo %}
+                        {{ entrega.numero_recibo }}
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="titulo">
+                    Beneficiario
+                </td>
+
+                <td>
+
+                    {{ persona.apellido }},
+                    {{ persona.nombre }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="titulo">
+                    DNI
+                </td>
+
+                <td>
+
+                    {{ persona.dni }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="titulo">
+                    Dirección
+                </td>
+
+                <td>
+
+                    {{ persona.direccion }}
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td class="titulo">
+                    Ayuda
+                </td>
+
+                <td>
+
+                    {{ ayuda.nombre }}
+
+                </td>
+
+            </tr>
+
+        </table>
+
+
+        <div class="descripcion">
+
+            <b>Detalle de la ayuda</b>
+
+            <br><br>
+
+            {{ entrega.descripcion|default:"Sin observaciones." }}
+
+        </div>
+
+
+        <div class="footer">
+
+            Este comprobante acredita la entrega de ayuda social
+            realizada por la Municipalidad de Rawson.
+
+            <br><br>
+
+            Documento generado automáticamente por el Sistema de Gestión Social.
+
+        </div>
+
+    </body>
+</html>

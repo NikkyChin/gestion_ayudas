@@ -23,6 +23,32 @@ class EntregaAyuda(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     descripcion = models.TextField(blank=True)
 
+    numero_recibo = models.CharField(
+        max_length=30,
+        blank=True,
+        verbose_name="Número de recibo"
+    )
+
+    pdf_recibo = models.FileField(
+        upload_to="recibos/",
+        blank=True,
+        null=True,
+        verbose_name="Comprobante PDF"
+    )
+
+    email_enviado = models.BooleanField(
+        default=False
+    )
+
+    fecha_envio_email = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+
+    error_envio = models.TextField(
+        blank=True
+    )
+
     class Meta:
         ordering = ["-fecha"]
         verbose_name = "Entrega de ayuda"

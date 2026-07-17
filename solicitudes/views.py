@@ -1,5 +1,6 @@
 from collections import defaultdict
 from urllib import request
+from solicitudes.services.recibo_service import procesar_recibo
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -11,6 +12,11 @@ from django.db.models import Q
 from django.utils.dateparse import parse_date
 from django.db.models import Count
 from datetime import datetime
+
+from django.contrib import messages
+from django.shortcuts import get_object_or_404
+
+from solicitudes.services.recibo_service import procesar_recibo
 
 @login_required
 def entregar_ayuda(request):
@@ -90,8 +96,43 @@ def entregar_ayuda(request):
                     dni=conviviente.dni,
                     parentesco=conviviente.parentesco,
                 )
+            
+            try:
 
-            return redirect("personas:detalle_persona", persona_id=persona.id)
+                procesar_recibo(entrega)
+
+                if not persona.email:
+
+                    messages.warning(
+                        request,
+                        "La ayuda fue registrada correctamente. La persona no posee correo electrónico."
+                    )
+
+                elif entrega.email_enviado:
+
+                    messages.success(
+                        request,
+                        "La ayuda fue registrada y el comprobante fue enviado correctamente."
+                    )
+
+                else:
+
+                    messages.warning(
+                        request,
+                        f"La ayuda fue registrada, pero el correo no pudo enviarse. {entrega.error_envio}"
+                    )
+
+            except Exception:
+
+                messages.warning(
+                    request,
+                    "La ayuda fue registrada, pero ocurrió un problema al enviar el comprobante."
+                )
+
+            return redirect(
+                "personas:detalle_persona",
+                persona_id=persona.id
+            )
     else:
         form = EntregaAyudaForm()
         form.fields["ayuda"].queryset = ayudas
@@ -382,3 +423,36 @@ def imprimir_estadisticas(request):
         "secretaria_id": secretaria_id,
         "nombre_secretaria": nombre_secretaria,
     })
+
+    
+@login_required
+def reenviar_comprobante(request, entrega_id):
+
+    if request.method != "POST":
+        return redirect("usuarios:inicio")
+
+    entrega = get_object_or_404(
+        EntregaAyuda,
+        pk=entrega_id
+    )
+
+    try:
+
+        procesar_recibo(entrega)
+
+        messages.success(
+            request,
+            "Comprobante reenviado correctamente."
+        )
+
+    except Exception:
+
+        messages.error(
+            request,
+            "No fue posible reenviar el comprobante."
+        )
+
+    return redirect(
+        "personas:detalle_persona",
+        persona_id=entrega.persona.id
+    )

@@ -70,15 +70,18 @@ class ConfiguracionCorreo(models.Model):
 
     nombre_remitente = models.CharField(
         max_length=150,
-        help_text="Nombre que verá el destinatario."
+        help_text="Nombre que verá el destinatario.",
+        blank=True
     )
 
     email = models.EmailField(
-        unique=True
+        unique=True,
+        blank=True
     )
 
     password = models.CharField(
-        max_length=255
+        max_length=255,
+        blank=True
     )
 
     smtp_host = models.CharField(
@@ -111,4 +114,6 @@ class ConfiguracionCorreo(models.Model):
         verbose_name_plural = "Configuraciones de correo"
 
     def __str__(self):
-        return f"{self.secretaria.nombre} ({self.email})"
+        if self.email:
+            return f"{self.secretaria.nombre} ({self.email})"
+        return self.secretaria.nombre

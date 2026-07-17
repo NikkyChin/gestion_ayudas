@@ -2,7 +2,22 @@ from django import forms
 from django.core.exceptions import ValidationError
 from .models import Ayuda
 
+from .models import ConfiguracionCorreo
 
+
+class ConfiguracionCorreoAdminForm(forms.ModelForm):
+
+    password = forms.CharField(
+        label="Contraseña",
+        widget=forms.PasswordInput(
+            render_value=True
+        )
+    )
+
+    class Meta:
+        model = ConfiguracionCorreo
+        fields = "__all__"
+        
 class AyudaForm(forms.ModelForm):
 
     class Meta:

@@ -4,126 +4,160 @@
 
 {% block content %}
 
-<h1>Entregar ayuda</h1>
+    <h1>Entregar ayuda</h1>
 
-{% if not persona %}
+    {% if not persona %}
 
-    <!-- 🔍 BUSCADOR -->
-    <div class="tarjeta">
-        <h2>Buscar persona</h2>
+        <!-- 🔍 BUSCADOR -->
+        <div class="tarjeta">
+            <h2>Buscar persona</h2>
 
-        <form method="get">
-            <input type="text" name="q" placeholder="DNI, nombre o apellido" value="{{ query|default:'' }}" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-            <button class="btn2" type="submit">Buscar</button>
-        </form>
-    </div>
+            <form method="get">
+                <input type="text" name="q" placeholder="DNI, nombre o apellido" value="{{ query|default:'' }}" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+                <button class="btn2" type="submit">Buscar</button>
+            </form>
+        </div>
 
-    <!-- ❌ SIN RESULTADOS -->
-    {% if query and not personas and not convivientes %}
-    <div class="tarjeta">
-        <p>No se encontraron resultados.</p>
-    </div>
-    {% endif %}
+        <!-- ❌ SIN RESULTADOS -->
+        {% if query and not personas and not convivientes %}
+        <div class="tarjeta">
+            <p>No se encontraron resultados.</p>
+        </div>
+        {% endif %}
 
-    <!-- 👥 PERSONAS -->
-    {% if personas %}
-    <div class="tarjeta">
-        <h2>Personas encontradas</h2>
-        <ul>
-            {% for p in personas %}
-                <li>
-                    <strong>{{ p.nombre }} {{ p.apellido }}</strong> - DNI {{ p.dni }}
-
-                    <a class="btn" style="padding: 5px 10px; font-size: 0.9em;"
-                    href="?q={{ query }}&persona_id={{ p.id }}">
-                    Seleccionar
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
-
-    <!-- 🏠 CONVIVIENTES -->
-    {% if convivientes %}
-    <div class="tarjeta">
-        <h2>Convivientes encontrados</h2>
-        <ul>
-            {% for c in convivientes %}
-                <li>
-                    <strong>{{ c.nombre }} {{ c.apellido }}</strong> - DNI {{ c.dni }}
-
-                    <div>
-                        <a class="btn" style="padding: 5px 10px; font-size: 0.9em;"
-                        href="?q={{ query }}&conviviente_id={{ c.id }}&accion=grupo">
-                        Grupo familiar
-                        </a>
+        <!-- 👥 PERSONAS -->
+        {% if personas %}
+        <div class="tarjeta">
+            <h2>Personas encontradas</h2>
+            <ul>
+                {% for p in personas %}
+                    <li>
+                        <strong>{{ p.nombre }} {{ p.apellido }}</strong> - DNI {{ p.dni }}
 
                         <a class="btn" style="padding: 5px 10px; font-size: 0.9em;"
-                        href="?q={{ query }}&conviviente_id={{ c.id }}&accion=independizar">
-                        Independizar
+                        href="?q={{ query }}&persona_id={{ p.id }}">
+                        Seleccionar
                         </a>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- 🏠 CONVIVIENTES -->
+        {% if convivientes %}
+        <div class="tarjeta">
+            <h2>Convivientes encontrados</h2>
+            <ul>
+                {% for c in convivientes %}
+                    <li>
+                        <strong>{{ c.nombre }} {{ c.apellido }}</strong> - DNI {{ c.dni }}
+
+                        <div>
+                            <a class="btn" style="padding: 5px 10px; font-size: 0.9em;"
+                            href="?q={{ query }}&conviviente_id={{ c.id }}&accion=grupo">
+                            Grupo familiar
+                            </a>
+
+                            <a class="btn" style="padding: 5px 10px; font-size: 0.9em;"
+                            href="?q={{ query }}&conviviente_id={{ c.id }}&accion=independizar">
+                            Independizar
+                            </a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+    {% endif %}
+
+    <!-- ⚠️ AVISO SI ES CONVIVIENTE -->
+    {% if conviviente_encontrado %}
+    <div class="tarjeta">
+        <p>
+            <strong>Atención:</strong> el DNI pertenece a un conviviente
+            <strong>{{ conviviente_encontrado.nombre }} {{ conviviente_encontrado.apellido }}</strong>.
+        </p>
     </div>
     {% endif %}
 
-{% endif %}
+    <!-- 👤 PERSONA SELECCIONADA -->
+    {% if persona %}
+        <div class="tarjeta">
+            <h2>Persona seleccionada</h2>
 
-<!-- ⚠️ AVISO SI ES CONVIVIENTE -->
-{% if conviviente_encontrado %}
-<div class="tarjeta">
-    <p>
-        <strong>Atención:</strong> el DNI pertenece a un conviviente
-        <strong>{{ conviviente_encontrado.nombre }} {{ conviviente_encontrado.apellido }}</strong>.
-    </p>
-</div>
-{% endif %}
+            <p><strong>Nombre:</strong> {{ persona.nombre }} {{ persona.apellido }}</p>
+            <p><strong>DNI:</strong> {{ persona.dni }}</p>
+            <p><strong>Dirección:</strong> {{ persona.direccion }}</p>
+            <p><strong>Barrio:</strong> {{ persona.barrio }}</p>
 
-<!-- 👤 PERSONA SELECCIONADA -->
-{% if persona %}
-<div class="tarjeta">
-    <h2>Persona seleccionada</h2>
+            <h3>Convivientes declarados</h3>
+            <ul>
+                {% for conviviente in persona.convivientes.all %}
+                    <li>
+                        {{ conviviente.nombre }} {{ conviviente.apellido }}
+                        {% if conviviente.parentesco %}- {{ conviviente.parentesco }}{% endif %}
+                        {% if conviviente.dni %}- DNI {{ conviviente.dni }}{% endif %}
+                    </li>
+                {% empty %}
+                    <li>No tiene convivientes declarados.</li>
+                {% endfor %}
+            </ul>
+        </div>
 
-    <p><strong>Nombre:</strong> {{ persona.nombre }} {{ persona.apellido }}</p>
-    <p><strong>DNI:</strong> {{ persona.dni }}</p>
-    <p><strong>Dirección:</strong> {{ persona.direccion }}</p>
-    <p><strong>Barrio:</strong> {{ persona.barrio }}</p>
+        <!-- 📦 FORM ENTREGA -->
+        <div class="tarjeta">
+            <h2>Registrar entrega</h2>
 
-    <h3>Convivientes declarados</h3>
-    <ul>
-        {% for conviviente in persona.convivientes.all %}
-            <li>
-                {{ conviviente.nombre }} {{ conviviente.apellido }}
-                {% if conviviente.parentesco %}- {{ conviviente.parentesco }}{% endif %}
-                {% if conviviente.dni %}- DNI {{ conviviente.dni }}{% endif %}
-            </li>
-        {% empty %}
-            <li>No tiene convivientes declarados.</li>
-        {% endfor %}
-    </ul>
-</div>
+            {% if secretaria %}
+                <p><strong>Secretaría:</strong> {{ secretaria.nombre }}</p>
+            {% endif %}
 
-<!-- 📦 FORM ENTREGA -->
-<div class="tarjeta">
-    <h2>Registrar entrega</h2>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="q" value="{{ query }}">
 
-    {% if secretaria %}
-        <p><strong>Secretaría:</strong> {{ secretaria.nombre }}</p>
+                <p>
+                    <label for="{{ form.numero_recibo.id_for_label }}">
+                        <strong>Número de recibo</strong>
+                    </label><br>
+                    {{ form.numero_recibo }}
+                    {% if form.numero_recibo.errors %}
+                        <span class="error">{{ form.numero_recibo.errors }}</span>
+                    {% endif %}
+                </p>
+
+                <p>
+                    <label for="{{ form.ayuda.id_for_label }}">
+                        <strong>Ayuda</strong>
+                    </label><br>
+                    {{ form.ayuda }}
+                    {% if form.ayuda.errors %}
+                        <span class="error">{{ form.ayuda.errors }}</span>
+                    {% endif %}
+                </p>
+
+                <p>
+                    <label for="{{ form.descripcion.id_for_label }}">
+                        <strong>Detalle de la ayuda</strong>
+                    </label><br>
+                    {{ form.descripcion }}
+                    {% if form.descripcion.errors %}
+                        <span class="error">{{ form.descripcion.errors }}</span>
+                    {% endif %}
+                </p>
+
+                <button class="btn" type="submit">
+                    Guardar entrega
+                </button>
+
+                <a class="btn" href="?q={{ query }}">
+                    Cancelar
+                </a>
+
+            </form>
+        </div>
     {% endif %}
-
-    <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="q" value="{{ query }}">
-
-        {{ form.as_p }}
-
-        <button class="btn" type="submit" href="{% url 'usuarios:inicio' %}">Guardar entrega</button>
-        <a class="btn" href="?q={{ query }}">Cancelar</a>
-    </form>
-</div>
-{% endif %}
 
 {% endblock %}

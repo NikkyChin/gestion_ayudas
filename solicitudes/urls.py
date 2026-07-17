@@ -7,4 +7,5 @@ urlpatterns = [
     path("entregar/", views.entregar_ayuda, name="entregar_ayuda"),
     path("estadisticas/", views.estadisticas_entregas, name="estadisticas_entregas"),
     path("estadisticas/imprimir/", views.imprimir_estadisticas, name="imprimir_estadisticas"),
+    path("reenviar-comprobante/<int:entrega_id>/", views.reenviar_comprobante, name="reenviar_comprobante"),
 ]
